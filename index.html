@@ -29,7 +29,7 @@
 --t1:#d8cff0;
 --t2:#a090c0;
 --t3:#3a2858;
---card:rgba(18, 18, 25, 0.45); /* Deep frosted base */
+--card:rgba(18, 18, 25, 0.45);
 --cb:rgba(255,255,255,.06);
 }
 
@@ -48,6 +48,26 @@ color:var(--t1);
 font-size:14px;line-height:1.6;
 overflow-x:hidden;
 }
+
+/* ── BILINGUAL ENGINE ── */
+body.lang-en .de { display: none !important; }
+body.lang-de .en { display: none !important; }
+
+/* ── LANGUAGE TOGGLE UI ── */
+.lang-gate {
+  position: fixed; top: 18px; right: 18px; z-index: 10001;
+  display: flex; background: rgba(10, 10, 15, 0.5);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 4px; gap: 4px;
+  animation: fiu .9s 4s both; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+.lo {
+  font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 2px; color: var(--t2); padding: 6px 12px;
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 2px;
+}
+.lo.act { background: rgba(200,150,40,0.15); color: var(--g2); box-shadow: 0 0 10px rgba(200,150,40,0.2) inset; }
+.lo:hover:not(.act) { color: var(--t0); background: rgba(255,255,255,0.05); }
 
 /* ── AURORA & STRUCTURAL GRID ── */
 body::before{
@@ -72,53 +92,107 @@ background-size: 50px 50px; opacity: 0.8;
 66%{opacity:.85;transform:scale(.96) translate(-1%,1.5%);}
 }
 
-/* ── MYTHIC GATE (OPENING EFFECT) ── */
+/* ── THE DIMENSIONAL RIFT ── */
 #mythic-gate {
   position: fixed; inset: 0; z-index: 10000;
-  background: #010108; display: flex; flex-direction: column; justify-content: center; align-items: center;
-  animation: gateVanish 1.5s cubic-bezier(.75,0,.25,1) 2.8s forwards;
-  pointer-events: none;
+  background: #010105; display: flex; justify-content: center; align-items: center;
+  animation: gateVanish 0.5s ease-out 3.8s forwards;
+  pointer-events: none; perspective: 1000px;
 }
-.gate-ring {
-  position: absolute; width: 1px; height: 1px;
-  border: 1px solid var(--g1); border-radius: 50%;
-  animation: ringExpand 2.8s cubic-bezier(0.16,1,0.3,1) forwards;
+
+.gate-flash {
+  position: absolute; inset: 0; background: #fff; opacity: 0;
+  animation: blindingFlash 3.8s ease-in-out forwards;
+  z-index: 10; mix-blend-mode: overlay;
 }
-.gate-ring-2 {
-  position: absolute; width: 100px; height: 100px;
-  border: 1px solid rgba(104,64,176,.4); border-radius: 50%;
-  animation: ringSpin 2.5s cubic-bezier(.75,0,.25,1) forwards;
+
+.gate-rift {
+  position: relative; display: flex; justify-content: center; align-items: center;
+  transform-style: preserve-3d;
 }
+
 .gate-rune {
-  font-family: 'Cinzel Decorative', serif; font-size: 32px; color: var(--g1);
-  text-shadow: 0 0 20px var(--g1);
-  animation: runePulse 2.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  font-family: 'Cinzel Decorative', serif; font-size: 60px; color: var(--g2);
+  text-shadow: 0 0 20px var(--g1), 0 0 40px var(--g2), 0 0 80px #fff;
+  animation: runeSupercharge 3.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+  z-index: 5; line-height: 1;
 }
-@keyframes ringExpand {
-  0% { transform: scale(1); opacity: 0; }
-  30% { opacity: 1; box-shadow: 0 0 50px var(--g1) inset, 0 0 50px var(--g1); }
-  75% { transform: scale(1500); opacity: 0; border-width: 15px; border-color: var(--v2); }
-  100% { transform: scale(2000); opacity: 0; }
+
+.gate-magic-circle {
+  position: absolute; width: 180px; height: 180px;
+  border: 1px solid rgba(240,192,64,0.3); border-radius: 50%;
+  border-top-color: var(--g2); border-bottom-color: var(--v2);
+  animation: circleSpin 3.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
 }
-@keyframes ringSpin {
-  0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
+.gate-magic-circle::before {
+  content: ''; position: absolute; inset: 15px; border: 1px dashed rgba(200,150,40,0.5); border-radius: 50%;
+  animation: circleSpin 3.2s reverse linear forwards;
+}
+
+.gate-rays {
+  position: absolute; width: 400px; height: 400px;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(240,192,64,0.5) 5deg, transparent 15deg, transparent 60deg, rgba(104,64,176,0.5) 65deg, transparent 75deg, transparent 120deg, rgba(255,255,255,0.7) 125deg, transparent 135deg, transparent 180deg, rgba(240,192,64,0.5) 185deg, transparent 195deg, transparent 240deg, rgba(104,64,176,0.5) 245deg, transparent 255deg, transparent 300deg, rgba(255,255,255,0.7) 305deg, transparent 315deg);
+  border-radius: 50%; filter: blur(10px); opacity: 0;
+  animation: raySpin 3.2s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+
+.gate-shockwave {
+  position: absolute; width: 10px; height: 10px;
+  border: 2px solid rgba(255,255,255,0.9); border-radius: 50%;
+  box-shadow: 0 0 60px var(--g2), inset 0 0 60px var(--g2), 0 0 100px #fff;
+  opacity: 0;
+  animation: shockwaveBurst 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes runeSupercharge {
+  0% { transform: scale(0) rotate(-90deg); opacity: 0; filter: blur(20px); }
+  20% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0); }
+  60% { transform: scale(1.1) rotate(0deg); text-shadow: 0 0 60px var(--g1), 0 0 100px #fff; }
+  85% { transform: scale(0.85) translateZ(-150px); opacity: 1; }
+  92% { transform: scale(6) translateZ(300px); opacity: 0; filter: blur(15px); }
+  100% { transform: scale(10); opacity: 0; }
+}
+
+@keyframes circleSpin {
+  0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
   20% { opacity: 1; }
-  80% { transform: rotate(180deg) scale(1.5); opacity: 0; filter: blur(10px); }
+  85% { transform: rotate(180deg) scale(1); opacity: 1; }
+  92% { transform: rotate(240deg) scale(3); opacity: 0; }
   100% { opacity: 0; }
 }
-@keyframes runePulse {
-  0% { opacity: 0; filter: blur(10px); transform: scale(0.5); }
-  20% { opacity: 1; filter: blur(0); transform: scale(1.2); }
-  70% { opacity: 1; filter: blur(0); transform: scale(1); text-shadow: 0 0 40px var(--g2); }
-  100% { opacity: 0; filter: blur(20px); transform: scale(3); }
+
+@keyframes raySpin {
+  0% { transform: rotate(0deg) scale(0); opacity: 0; }
+  30% { opacity: 1; }
+  85% { transform: rotate(200deg) scale(1.5); opacity: 1; }
+  92% { transform: rotate(240deg) scale(5); opacity: 0; }
+  100% { opacity: 0; }
 }
-@keyframes gateVanish { to { opacity: 0; visibility: hidden; } }
+
+@keyframes shockwaveBurst {
+  0%, 85% { transform: scale(1); opacity: 0; border-width: 2px; }
+  88% { opacity: 1; border-width: 80px; border-color: #fff; }
+  98% { transform: scale(250); opacity: 0; border-width: 1px; }
+  100% { opacity: 0; }
+}
+
+@keyframes blindingFlash {
+  0%, 85% { opacity: 0; }
+  90% { opacity: 1; background: #fff; }
+  100% { opacity: 0; }
+}
+
+@keyframes gateVanish {
+  to { opacity: 0; visibility: hidden; }
+}
 
 /* ── ORACLE NAV ── */
 #oracle{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:10px;align-items:center;}
 .odot{width:5px;height:5px;border-radius:50%;background:var(--t3);border:1px solid var(--t2);transition:all .35s;cursor:pointer;position:relative;}
 .odot.on{background:var(--g1);border-color:var(--g1);box-shadow:0 0 8px var(--g1),0 0 18px rgba(200,150,40,.4); transform: scale(1.5);}
-.odot::after{content:attr(data-l);position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono','Courier New',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--g1);white-space:nowrap;opacity:0;transition:all .3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none;}
+.odot::after{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono','Courier New',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--g1);white-space:nowrap;opacity:0;transition:all .3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none;}
+body.lang-en .odot::after { content: attr(data-l-en); }
+body.lang-de .odot::after { content: attr(data-l-de); }
 .odot:hover::after{opacity:1; right: 20px;}
 .oline{width:1px;height:16px;background:rgba(200,150,40,.18);}
 
@@ -166,13 +240,13 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 .s-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28%;height:28%;border-radius:50%;background:radial-gradient(ellipse,rgba(200,150,40,.15),rgba(104,64,176,.12),transparent 70%);animation:corePulse 4s ease-in-out infinite;}
 @keyframes corePulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6; box-shadow: 0 0 20px rgba(200,150,40,.1);}50%{transform:translate(-50%,-50%) scale(1.2);opacity:1; box-shadow: 0 0 50px rgba(200,150,40,.2);}}
 
-/* Delayed animations to sync with Gate opening */
-.h-status{font-family:'JetBrains Mono','Courier New',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;margin-bottom:22px;animation:fiu .9s 2.8s both;}
+/* HERO ANIMATIONS */
+.h-status{font-family:'JetBrains Mono','Courier New',monospace;font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;margin-bottom:22px;animation:fiu .9s 3.2s both;}
 .h-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--g1);box-shadow:0 0 10px var(--g1);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{box-shadow:0 0 5px var(--g1);}50%{box-shadow:0 0 18px var(--g1),0 0 32px rgba(200,150,40,.3);}}
 @keyframes fiu{from{opacity:0;transform:translateY(25px); filter: blur(8px);}to{opacity:1;transform:none; filter: blur(0);}}
 
-.h-name-wrap{display:inline-block;animation:conjure 1.8s cubic-bezier(0.16, 1, 0.3, 1) 3s both;}
+.h-name-wrap{display:inline-block;animation:conjure 1.8s cubic-bezier(0.16, 1, 0.3, 1) 3.3s both;}
 @keyframes conjure{from{opacity:0;filter:blur(25px);letter-spacing:20px; transform: scale(1.1);}to{opacity:1;filter:blur(0);letter-spacing:-2px; transform: scale(1);}}
 .h-name{font-family:'Cinzel Decorative','Palatino Linotype',serif;font-size:clamp(58px,12vw,185px);font-weight:900;line-height:.86;letter-spacing:-2px;color:#f2ecff;display:block;position:relative;}
 @supports(-webkit-background-clip:text) or (background-clip:text){
@@ -180,11 +254,11 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 @keyframes nameShim{0%,100%{background-position:200% center;}50%{background-position:-20% center; text-shadow: 0 0 40px rgba(200,150,40,0.3);}}
 }
 
-.h-div{width:260px;height:1px;margin:18px 0 22px;background:linear-gradient(to right,var(--g1),var(--v1),transparent);animation:fiu .9s 3.5s both;position:relative;}
+.h-div{width:260px;height:1px;margin:18px 0 22px;background:linear-gradient(to right,var(--g1),var(--v1),transparent);animation:fiu .9s 3.6s both;position:relative;}
 .h-div::before{content:'';position:absolute;left:-1px;top:-3.5px;width:8px;height:8px;border-radius:50%;background:var(--g1);box-shadow:0 0 12px var(--g1);}
-.h-role{font-family:'Space Grotesk','Segoe UI',sans-serif;font-size:clamp(13px,1.4vw,17px);font-weight:300;color:var(--t2);letter-spacing:.7px;margin-bottom:34px;animation:fiu .9s 3.7s both;}
+.h-role{font-family:'Space Grotesk','Segoe UI',sans-serif;font-size:clamp(13px,1.4vw,17px);font-weight:300;color:var(--t2);letter-spacing:.7px;margin-bottom:34px;animation:fiu .9s 3.8s both;}
 .h-role strong{color:var(--t1);font-weight:500;}
-.h-contacts{display:flex;flex-wrap:wrap;gap:7px;animation:fiu .9s 3.9s both;}
+.h-contacts{display:flex;flex-wrap:wrap;gap:7px;animation:fiu .9s 4s both;}
 .hc{font-family:'JetBrains Mono','Courier New',monospace;font-size:9px;padding:8px 16px;border-radius:2px;border:1px solid var(--cb);color:var(--t2);background:rgba(15,15,20,0.5); backdrop-filter: blur(8px); transition:all .4s cubic-bezier(0.16, 1, 0.3, 1); text-decoration:none;display:inline-block;cursor:pointer;}
 .hc:hover{border-color:var(--g1);color:var(--t0); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.5), 0 0 15px rgba(200,150,40,0.2);}
 .hc.hi{border-color:rgba(200,150,40,.38);color:var(--g2);}
@@ -276,7 +350,7 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 .x-body li{list-style:none;padding-left:17px;position:relative;margin-bottom:6px;}
 .x-body li::before{content:'✦';position:absolute;left:0;color:var(--g1);opacity:.55;font-size:7px;line-height:2.5;}
 .x-meta{display:flex;flex-direction:column;align-items:flex-end;gap:10px;min-width:100px;}
-.x-date{font-family:'JetBrains Mono','Courier New',monospace;font-size:9.5px;color:var(--t2);letter-spacing:.8px;text-align:right;border:1px solid var(--cb);padding:6px 11px;border-radius:2px;line-height:1.7;}
+.x-date{font-family:'JetBrains Mono','Courier New',monospace;font-size:9.5px;color:var(--t2);letter-spacing:.8px;text-align:right;border:1px solid var(--cb);padding:6px 11px;border-radius:2px;line-height:1.7; text-transform: uppercase;}
 .x-tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;}
 .xt{font-family:'JetBrains Mono','Courier New',monospace;font-size:7.5px;padding:3px 8px;background:rgba(200,150,40,.10);border:1px solid rgba(200,150,40,.24);color:rgba(240,192,64,.90);border-radius:2px;}
 .xt.v{background:rgba(104,64,176,.10);border-color:rgba(104,64,176,.24);color:rgba(168,112,232,.90);}
@@ -451,7 +525,7 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 .seal-corner{position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 20px 20px 0;border-color:transparent var(--sc,rgba(200,150,40,.5)) transparent transparent;opacity:.35; transition: opacity 0.4s;}
 .seal:hover .seal-corner { opacity: 1; border-width: 0 30px 30px 0;}
 .seal-tag{font-family:'Cinzel','Palatino Linotype',serif;font-size:6.5px;letter-spacing:3px;text-transform:uppercase;color:var(--sc,#c89628);margin-bottom:16px;display:flex;align-items:center;gap:7px;opacity:.82;}
-.seal-tag::before{content:'✦ ACHIEVED';}
+.seal-tag::before{content:'✦ ';}<span class="en">ACHIEVED</span><span class="de">ERREICHT</span>
 .seal-icon{font-size:22px;margin-bottom:12px;display:block;color:var(--sc,#c89628); transition: transform 0.4s ease;}
 .seal:hover .seal-icon { transform: scale(1.2) rotate(15deg); text-shadow: 0 0 15px var(--sc); }
 .seal-name{font-family:'Cinzel','Palatino Linotype',serif;font-size:clamp(14px,2vw,22px);font-weight:700;color:var(--t0);line-height:1.2;margin-bottom:9px;}
@@ -503,30 +577,39 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 </style>
 
 </head>
-<body>
+<body class="lang-en">
+
+<div class="lang-gate">
+  <div id="btn-en" class="lo act" onclick="setLang('en')">EN</div>
+  <div id="btn-de" class="lo" onclick="setLang('de')">DE</div>
+</div>
 
 <div id="mythic-gate" aria-hidden="true">
-  <div class="gate-ring"></div>
-  <div class="gate-ring-2"></div>
-  <div class="gate-rune">⬡</div>
+  <div class="gate-flash"></div>
+  <div class="gate-rift">
+    <div class="gate-rays"></div>
+    <div class="gate-magic-circle"></div>
+    <div class="gate-rune">⬡</div>
+    <div class="gate-shockwave"></div>
+  </div>
 </div>
 
 <div id="oracle">
-  <div class="odot on" data-l="HERO" data-s="s-hero"></div><div class="oline"></div>
-  <div class="odot" data-l="PROFILE" data-s="s-manifesto"></div><div class="oline"></div>
-  <div class="odot" data-l="CLIENTS" data-s="s-chronicles"></div><div class="oline"></div>
-  <div class="odot" data-l="EXPERIENCE" data-s="s-experience"></div><div class="oline"></div>
-  <div class="odot" data-l="WORK" data-s="s-portal"></div><div class="oline"></div>
-  <div class="odot" data-l="SKILLS" data-s="s-arsenal"></div><div class="oline"></div>
-  <div class="odot" data-l="EDUCATION" data-s="s-ascension"></div><div class="oline"></div>
-  <div class="odot" data-l="CERTS" data-s="s-seals"></div>
+  <div class="odot on" data-l-en="HERO" data-l-de="START" data-s="s-hero"></div><div class="oline"></div>
+  <div class="odot" data-l-en="PROFILE" data-l-de="PROFIL" data-s="s-manifesto"></div><div class="oline"></div>
+  <div class="odot" data-l-en="CLIENTS" data-l-de="KUNDEN" data-s="s-chronicles"></div><div class="oline"></div>
+  <div class="odot" data-l-en="EXPERIENCE" data-l-de="ERFAHRUNG" data-s="s-experience"></div><div class="oline"></div>
+  <div class="odot" data-l-en="WORK" data-l-de="ARBEITEN" data-s="s-portal"></div><div class="oline"></div>
+  <div class="odot" data-l-en="SKILLS" data-l-de="FÄHIGKEITEN" data-s="s-arsenal"></div><div class="oline"></div>
+  <div class="odot" data-l-en="EDUCATION" data-l-de="AUSBILDUNG" data-s="s-ascension"></div><div class="oline"></div>
+  <div class="odot" data-l-en="CERTS" data-l-de="ZERTIFIKATE" data-s="s-seals"></div>
 </div>
 
 <div class="cv">
 
 <section class="hero" id="s-hero">
-  <div class="h-rail L"><div class="h-rail-txt">3D ARTIST · ENVIRONMENT DESIGNER</div></div>
-  <div class="h-rail R"><div class="h-rail-txt">HYDERABAD → GERMANY · 2027</div></div>
+  <div class="h-rail L"><div class="h-rail-txt"><span class="en">3D ARTIST · ENVIRONMENT DESIGNER</span><span class="de">3D-ARTIST · ENVIRONMENT DESIGNER</span></div></div>
+  <div class="h-rail R"><div class="h-rail-txt"><span class="en">HYDERABAD, INDIA</span><span class="de">HYDERABAD, INDIEN</span></div></div>
   <div class="summon" aria-hidden="true">
     <div class="s-ring sr1">
       <div class="sn sn-g" style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:6px;height:6px;"></div>
@@ -546,10 +629,13 @@ html.js-ready .rv.d7{transition-delay:.74s;}
     <div class="s-core"></div>
   </div>
   <div class="hero-float-wrapper">
-    <div class="h-status">OPEN TO OPPORTUNITIES · GERMANY · SUMMER 2027</div>
+    <div class="h-status"><span class="en">OPEN TO OPPORTUNITIES · HYDERABAD, INDIA</span><span class="de">OFFEN FÜR NEUE HERAUSFORDERUNGEN · HYDERABAD, INDIEN</span></div>
     <div class="h-name-wrap"><span class="h-name">SUMANTH</span></div>
     <div class="h-div"></div>
-    <div class="h-role"><strong>3D Environment Design</strong> &nbsp;·&nbsp; Digital Sculpting &nbsp;·&nbsp; Character Modelling<br><span style="display:block;margin-top:4px;">Hyderabad, India &nbsp;→&nbsp; Germany, 2027</span></div>
+    <div class="h-role">
+      <span class="en"><strong>3D Environment Design</strong> &nbsp;·&nbsp; Digital Sculpting &nbsp;·&nbsp; Character Modelling<br><span style="display:block;margin-top:4px;">Hyderabad, India</span></span>
+      <span class="de"><strong>3D Environment Design</strong> &nbsp;·&nbsp; Digitale Bildhauerei &nbsp;·&nbsp; Charaktermodellierung<br><span style="display:block;margin-top:4px;">Hyderabad, Indien</span></span>
+    </div>
     <div class="h-contacts">
       <a href="mailto:your.email@gmail.com" class="hc hi">your.email@gmail.com</a>
       <a href="tel:+910000000000" class="hc">+91 XXXXX XXXXX</a>
@@ -564,18 +650,21 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 <div class="runediv" aria-hidden="true"><div class="rune-g">✦</div></div>
 
 <section class="manifesto" id="s-manifesto">
-  <div class="mani-lbl rv">CREATIVE MANIFESTO</div>
-  <p class="mani-text rv d1">A <em>3D generalist</em> drawn to building worlds — environments that feel inhabited, surfaces that feel real, characters that feel alive. Rooted in a Fine Arts foundation, bridged with <em>industrial CAD fluency</em>. Most at home where artistic vision meets technical precision.</p>
+  <div class="mani-lbl rv"><span class="en">CREATIVE MANIFESTO</span><span class="de">KREATIVES MANIFEST</span></div>
+  <p class="mani-text rv d1">
+    <span class="en">A <em>3D generalist</em> drawn to building worlds — environments that feel inhabited, surfaces that feel real, characters that feel alive. Rooted in a Fine Arts foundation, bridged with <em>industrial CAD fluency</em>. Most at home where artistic vision meets technical precision.</span>
+    <span class="de">Ein <em>3D-Generalist</em> mit einer Leidenschaft für das Erschaffen von Welten – Umgebungen, die bewohnt wirken, Oberflächen, die sich echt anfühlen, und Charaktere, die lebendig sind. Verwurzelt in der bildenden Kunst, kombiniert mit <em>industrieller CAD-Kompetenz</em>. Am stärksten dort, wo künstlerische Vision auf technische Präzision trifft.</span>
+  </p>
 </section>
 
 <div class="runediv" aria-hidden="true"><div class="rune-g">⬡</div></div>
 
 <section class="chronicles" id="s-chronicles">
-  <div class="chr-hd rv"><span class="chr-lbl">CREATIVE CREDITS</span><span class="chr-hl"></span></div>
+  <div class="chr-hd rv"><span class="chr-lbl"><span class="en">CREATIVE CREDITS</span><span class="de">KREATIVE REFERENZEN</span></span><span class="chr-hl"></span></div>
   <div class="chr-agency rv d1">
-    <div class="chr-agency-lbl">ENGAGED THROUGH</div>
+    <div class="chr-agency-lbl"><span class="en">ENGAGED THROUGH</span><span class="de">BEAUFTRAGT DURCH</span></div>
     <div class="chr-agency-name">The Classic Partnership Inc.</div>
-    <div class="chr-agency-sub">Design Agency · Toronto, Canada · Mar – Jul 2025</div>
+    <div class="chr-agency-sub"><span class="en">Design Agency · Toronto, Canada · Mar – Jul 2025</span><span class="de">Designagentur · Toronto, Kanada · Mär – Jul 2025</span></div>
   </div>
   <div class="chr-rule rv d2"></div>
   <div class="midea-block">
@@ -588,11 +677,11 @@ html.js-ready .rv.d7{transition-delay:.74s;}
         <div class="midea-sub">COMFEE</div>
       </div>
     </div>
-    <div class="midea-cap rv d3">1 CLIENT · 3 SUB-BRANDS · MULTI-IDENTITY DESIGN SYSTEM</div>
+    <div class="midea-cap rv d3"><span class="en">1 CLIENT · 3 SUB-BRANDS · MULTI-IDENTITY DESIGN SYSTEM</span><span class="de">1 KUNDE · 3 SUBMARKEN · MULTI-IDENTITÄTS-DESIGNSYSTEM</span></div>
   </div>
   <div class="chr-sep rv d4"></div>
   <div class="roster">
-    <div class="r-sub rv d4">ALL CLIENTS — ALL MAJOR</div>
+    <div class="r-sub rv d4"><span class="en">ALL CLIENTS — ALL MAJOR</span><span class="de">ALLE KUNDEN — HAUPTAUFTRÄGE</span></div>
     <div class="t1n rv d4">HOME DEPOT CANADA</div>
     <div class="t1n rv d5">KAWASAKI CANADA</div>
     <div class="tsep rv d5"></div>
@@ -602,28 +691,32 @@ html.js-ready .rv.d7{transition-delay:.74s;}
       <span class="t2n">GC BURGER</span>
     </div>
   </div>
-  <div class="cl-note rv d7">Video editing · Graphic design · Motion graphics · Brand systems · Spatial campaigns</div>
+  <div class="cl-note rv d7"><span class="en">Video editing · Graphic design · Motion graphics · Brand systems · Spatial campaigns</span><span class="de">Videobearbeitung · Grafikdesign · Motion Graphics · Markensysteme · Räumliche Kampagnen</span></div>
 </section>
 
 <div class="runediv" aria-hidden="true"><div class="rune-g">◈</div></div>
 
 <section class="sec" id="s-experience">
   <div class="xbg">CHRON</div>
-  <div class="sec-hd rv"><span class="sec-n">01</span><span class="sec-t">Experience</span></div>
+  <div class="sec-hd rv"><span class="sec-n">01</span><span class="sec-t"><span class="en">Experience</span><span class="de">Erfahrung</span></span></div>
   <div class="xcard rv d1">
     <div class="xcard-trace"></div>
     <div>
-      <div class="x-role">Graphic Designer</div>
-      <div class="x-org">The Classic Partnership Inc. <span class="loc">· Toronto, Canada</span></div>
+      <div class="x-role"><span class="en">Graphic Designer</span><span class="de">Grafikdesigner</span></div>
+      <div class="x-org">The Classic Partnership Inc. <span class="loc"><span class="en">· Toronto, Canada</span><span class="de">· Toronto, Kanada</span></span></div>
       <ul class="x-body">
-        <li>Led creative production across 9+ international brand accounts simultaneously — video editing, graphic design, motion graphics, full content pipeline management</li>
-        <li>Managed Midea Canada's multi-sub-brand design system (Eureka, Pelonis, Comfee) — distinct visual identities within a unified brand architecture</li>
-        <li>Developed spatial marketing assets for Investohome Puerto Rico, drawing directly on environment and spatial design sensibility</li>
-        <li>Coordinated branded activations for KD Displays serving Home Depot Canada and Kawasaki Canada at retail and event scale</li>
+        <li class="en">Led creative production across 9+ international brand accounts simultaneously — video editing, graphic design, motion graphics, full content pipeline management</li>
+        <li class="de">Leitung der kreativen Produktion für über 9 internationale Marken – Videobearbeitung, Grafikdesign, Motion Graphics und vollständiges Pipeline-Management</li>
+        <li class="en">Managed Midea Canada's multi-sub-brand design system (Eureka, Pelonis, Comfee) — distinct visual identities within a unified brand architecture</li>
+        <li class="de">Verwaltung des Designsystems für mehrere Submarken von Midea Canada (Eureka, Pelonis, Comfee) – eigenständige visuelle Identitäten innerhalb einer einheitlichen Markenarchitektur</li>
+        <li class="en">Developed spatial marketing assets for Investohome Puerto Rico, drawing directly on environment and spatial design sensibility</li>
+        <li class="de">Entwicklung räumlicher Marketing-Assets für Investohome Puerto Rico, basierend auf Expertise im Umgebungs- und Raumdesign</li>
+        <li class="en">Coordinated branded activations for KD Displays serving Home Depot Canada and Kawasaki Canada at retail and event scale</li>
+        <li class="de">Koordination von Markenaktivierungen für KD Displays zur Betreuung von Home Depot Canada und Kawasaki Canada auf Retail- und Event-Ebene</li>
       </ul>
     </div>
     <div class="x-meta">
-      <div class="x-date">MAR 2025<br>→<br>JUL 2025</div>
+      <div class="x-date"><span class="en">MAR 2025<br>→<br>JUL 2025</span><span class="de">MÄR 2025<br>→<br>JUL 2025</span></div>
       <div class="x-tags">
         <span class="xt">After Effects</span><span class="xt">Premiere Pro</span>
         <span class="xt">Photoshop</span><span class="xt">Illustrator</span><span class="xt">CorelDraw</span>
@@ -633,16 +726,19 @@ html.js-ready .rv.d7{transition-delay:.74s;}
   <div class="xcard v rv d2">
     <div class="xcard-trace"></div>
     <div>
-      <div class="x-role">PGP — Automotive Designing & Manufacturing</div>
+      <div class="x-role"><span class="en">PGP — Automotive Designing & Manufacturing</span><span class="de">PGP — Automobildesign & Konstruktion</span></div>
       <div class="x-org">SkyySkill Academy <span class="loc">· ASDC / BOSCH JCC / IIT Guwahati E&amp;ICT · 2026</span></div>
       <ul class="x-body">
-        <li>10-month post-graduation program: 6 months expert sessions + 4-month project internship — full documentation through Summer 2027</li>
-        <li>Rare dual-discipline profile: creative 3D artistry meets parametric industrial CAD — a combination most applicants carry only one side of</li>
-        <li>Certified by ASDC (Skill India / Govt. of India), BOSCH JCC, and IIT Guwahati E&amp;ICT Academy with formal Letter of Recommendation</li>
+        <li class="en">10-month post-graduation program: 6 months expert sessions + 4-month project internship — full documentation through late 2026</li>
+        <li class="de">10-monatiges Postgraduiertenprogramm: 6 Monate Expertenrunden + 4-monatiges Projektpraktikum – vollständige Dokumentation bis Ende 2026</li>
+        <li class="en">Rare dual-discipline profile: creative 3D artistry meets parametric industrial CAD — a combination most applicants carry only one side of</li>
+        <li class="de">Seltenes interdisziplinäres Profil: kreative 3D-Kunstfertigkeit trifft auf parametrisches Industrie-CAD – eine Kombination, von der die meisten Bewerber nur eine Seite mitbringen</li>
+        <li class="en">Certified by ASDC (Skill India / Govt. of India), BOSCH JCC, and IIT Guwahati E&amp;ICT Academy with formal Letter of Recommendation</li>
+        <li class="de">Zertifiziert durch ASDC (Skill India / Govt. of India), BOSCH JCC und IIT Guwahati E&amp;ICT Academy mit offiziellem Empfehlungsschreiben</li>
       </ul>
     </div>
     <div class="x-meta">
-      <div class="x-date">2026<br>ACTIVE</div>
+      <div class="x-date">2026<br><span class="en">ACTIVE</span><span class="de">LAUFEND</span></div>
       <div class="x-tags">
         <span class="xt v">CATIA V5</span><span class="xt v">SolidWorks</span>
         <span class="xt v">CREO</span><span class="xt v">NX / UG</span><span class="xt v">ANSYS</span>
@@ -658,9 +754,9 @@ html.js-ready .rv.d7{transition-delay:.74s;}
     <div class="pg-r pgr1"></div><div class="pg-r pgr2"></div><div class="pg-r pgr3"></div>
     <div class="pg-core"></div>
   </div>
-  <div class="pg-lbl rv">Selected Work</div>
-  <div class="pg-title rv d1">What I Build</div>
-  <div class="pg-sub rv d2">Three worlds. Scroll to enter each.</div>
+  <div class="pg-lbl rv"><span class="en">Selected Work</span><span class="de">Ausgewählte Arbeiten</span></div>
+  <div class="pg-title rv d1"><span class="en">What I Build</span><span class="de">Was Ich Erschaffe</span></div>
+  <div class="pg-sub rv d2"><span class="en">Three worlds. Scroll to enter each.</span><span class="de">Drei Welten. Scrollen, um einzutreten.</span></div>
 </div>
 
 <div class="pz-in"></div>
@@ -674,9 +770,12 @@ html.js-ready .rv.d7{transition-delay:.74s;}
   <div class="pz-content">
     <div class="pz-num rv">01 / 03</div>
     <div class="pz-name rv d1">FUDO<br>MYO</div>
-    <div class="pz-type rv d2">Environment Scene · Personal Initiative · Jul – Aug 2024</div>
+    <div class="pz-type rv d2"><span class="en">Environment Scene · Personal Initiative · Jul – Aug 2024</span><span class="de">Umgebungsszene · Eigeninitiative · Jul – Aug 2024</span></div>
     <div class="pz-tools rv d3">Maya &nbsp;·&nbsp; ZBrush &nbsp;·&nbsp; Substance Painter &nbsp;·&nbsp; Unreal Engine 4</div>
-    <p class="pz-desc rv d4">A ruined Buddhist temple complex consumed by nature — roots and moss fracturing ancient stone, living systems overtaking hard architecture. Concept to completion: sculpt in ZBrush, model in Maya, texture in Substance Painter, full real-time scene and cinematic staging in UE4. Built entirely outside the curriculum — the complete pipeline where organic and hard surface disciplines coexist in a single frame.</p>
+    <p class="pz-desc rv d4">
+      <span class="en">A ruined Buddhist temple complex consumed by nature — roots and moss fracturing ancient stone, living systems overtaking hard architecture. Concept to completion: sculpt in ZBrush, model in Maya, texture in Substance Painter, full real-time scene and cinematic staging in UE4. Built entirely outside the curriculum — the complete pipeline where organic and hard surface disciplines coexist in a single frame.</span>
+      <span class="de">Ein verfallener buddhistischer Tempelkomplex, der von der Natur verschlungen wird – Wurzeln und Moos sprengen alten Stein, lebende Systeme erobern harte Architektur. Vom Konzept bis zur Fertigstellung: Skulptur in ZBrush, Modellierung in Maya, Texturierung in Substance Painter, vollständige Echtzeitszene und filmische Inszenierung in UE4. Komplett außerhalb des Lehrplans erstellt – die vollständige Pipeline, in der organische und Hard-Surface-Disziplinen in einem einzigen Frame verschmelzen.</span>
+    </p>
   </div>
 </section>
 <div class="pz-out"></div>
@@ -694,10 +793,13 @@ html.js-ready .rv.d7{transition-delay:.74s;}
   </div>
   <div class="pz-content">
     <div class="pz-num rv">02 / 03</div>
-    <div class="pz-name rv d1">CHARACTER<br>PIPELINE</div>
-    <div class="pz-type rv d2">Academic Series · Semester V · JNAFAU</div>
+    <div class="pz-name rv d1"><span class="en">CHARACTER<br>PIPELINE</span><span class="de">CHARAKTER<br>PIPELINE</span></div>
+    <div class="pz-type rv d2"><span class="en">Academic Series · Semester V · JNAFAU</span><span class="de">Akademische Reihe · Semester V · JNAFAU</span></div>
     <div class="pz-tools rv d3">Maya &nbsp;·&nbsp; ZBrush &nbsp;·&nbsp; Substance Painter &nbsp;·&nbsp; Arnold</div>
-    <p class="pz-desc rv d4">Full character production from base mesh to final lit render. High-poly sculpt in ZBrush — facial anatomy, skin surface, muscle structure — retopologised, UV unwrapped, textured in Substance Painter, rendered in Arnold. Includes biped and quadruped studies each completed with the full high-to-low poly bake pipeline pipeline intact.</p>
+    <p class="pz-desc rv d4">
+      <span class="en">Full character production from base mesh to final lit render. High-poly sculpt in ZBrush — facial anatomy, skin surface, muscle structure — retopologised, UV unwrapped, textured in Substance Painter, rendered in Arnold. Includes biped and quadruped studies each completed with the full high-to-low poly bake pipeline intact.</span>
+      <span class="de">Vollständige Charakterproduktion vom Base Mesh bis zum finalen gerenderten Bild. High-Poly-Sculpt in ZBrush – Gesichtsanatomie, Hautoberfläche, Muskelstruktur – Retopologie, UV-Unwrapping, texturiert in Substance Painter, gerendert in Arnold. Beinhaltet zweibeinige und vierbeinige Studien, jeweils mit vollständig intakter High-to-Low-Poly Bake-Pipeline.</span>
+    </p>
   </div>
 </section>
 <div class="pz-out"></div>
@@ -712,10 +814,13 @@ html.js-ready .rv.d7{transition-delay:.74s;}
   <div class="env-wm">ENV</div>
   <div class="pz-content">
     <div class="pz-num rv">03 / 03</div>
-    <div class="pz-name rv d1">ENVIRONMENT<br>DESIGN</div>
-    <div class="pz-type rv d2">Academic Series · Semester VI · JNAFAU</div>
+    <div class="pz-name rv d1"><span class="en">ENVIRONMENT<br>DESIGN</span><span class="de">UMGEBUNGS<br>DESIGN</span></div>
+    <div class="pz-type rv d2"><span class="en">Academic Series · Semester VI · JNAFAU</span><span class="de">Akademische Reihe · Semester VI · JNAFAU</span></div>
     <div class="pz-tools rv d3">Unreal Engine 4 &nbsp;·&nbsp; Maya &nbsp;·&nbsp; Substance Painter</div>
-    <p class="pz-desc rv d4">Interior and exterior environments built end-to-end inside UE4 — terrain generation, landscape sculpting, foliage placement, PBR material assignment, cinematic camera blocking and Sequencer animation passes. Full lighting across day and night: interior volumetrics, exterior atmospheric fog, sky lighting and IBL from asset creation through to final camera output.</p>
+    <p class="pz-desc rv d4">
+      <span class="en">Interior and exterior environments built end-to-end inside UE4 — terrain generation, landscape sculpting, foliage placement, PBR material assignment, cinematic camera blocking and Sequencer animation passes. Full lighting across day and night: interior volumetrics, exterior atmospheric fog, sky lighting and IBL from asset creation through to final camera output.</span>
+      <span class="de">Innen- und Außenumgebungen, durchgängig in UE4 erstellt – Terrain-Generierung, Landschafts-Sculpting, Platzierung von Vegetation, PBR-Materialzuweisung, filmisches Kamera-Blocking und Sequencer-Animationsdurchläufe. Vollständige Beleuchtung bei Tag und Nacht: volumetrische Innenbeleuchtung, atmosphärischer Außennebel, Himmelsbeleuchtung und IBL von der Asset-Erstellung bis zur finalen Kameraausgabe.</span>
+    </p>
   </div>
 </section>
 <div class="pz-out"></div>
@@ -724,10 +829,10 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 
 <section class="sec" id="s-arsenal">
   <div class="ars-bgt">ARSENAL</div>
-  <div class="sec-hd rv"><span class="sec-n">02</span><span class="sec-t">Skills &amp; Tools</span></div>
+  <div class="sec-hd rv"><span class="sec-n">02</span><span class="sec-t"><span class="en">Skills &amp; Tools</span><span class="de">Fähigkeiten &amp; Werkzeuge</span></span></div>
   <div class="sk-grid">
     <div class="sp w rv d1"><div class="sp-bar"></div>
-      <div class="sp-hd"><div class="spdot"></div><span class="sp-title">3D Modelling &amp; Sculpting</span><span class="sp-ct">PRIMARY</span></div>
+      <div class="sp-hd"><div class="spdot"></div><span class="sp-title"><span class="en">3D Modelling &amp; Sculpting</span><span class="de">3D-Modellierung &amp; Sculpting</span></span><span class="sp-ct"><span class="en">PRIMARY</span><span class="de">PRIMÄR</span></span></div>
       <div class="sp-bd">
         <span class="sk hi">Autodesk Maya</span><span class="sk hi">ZBrush</span><span class="sk hi">Substance Painter</span>
         <span class="sk">Blender</span><span class="sk">Cinema 4D</span><span class="sk">UV Unwrapping</span>
@@ -736,7 +841,7 @@ html.js-ready .rv.d7{transition-delay:.74s;}
       </div>
     </div>
     <div class="sp c rv d2"><div class="sp-bar"></div>
-      <div class="sp-hd"><div class="spdot"></div><span class="sp-title">Real-Time &amp; Environment</span><span class="sp-ct">PRIMARY</span></div>
+      <div class="sp-hd"><div class="spdot"></div><span class="sp-title"><span class="en">Real-Time &amp; Environment</span><span class="de">Echtzeit &amp; Umgebung</span></span><span class="sp-ct"><span class="en">PRIMARY</span><span class="de">PRIMÄR</span></span></div>
       <div class="sp-bd">
         <span class="sk ci">Unreal Engine 4</span><span class="sk ci">3D Environment Design</span>
         <span class="sk">Terrain Sculpting</span><span class="sk">Foliage Systems</span><span class="sk">PBR Materials</span>
@@ -745,7 +850,7 @@ html.js-ready .rv.d7{transition-delay:.74s;}
       </div>
     </div>
     <div class="sp vp rv d3"><div class="sp-bar"></div>
-      <div class="sp-hd"><div class="spdot"></div><span class="sp-title">Industrial CAD</span><span class="sp-ct">CERTIFIED</span></div>
+      <div class="sp-hd"><div class="spdot"></div><span class="sp-title"><span class="en">Industrial CAD</span><span class="de">Industrielles CAD</span></span><span class="sp-ct"><span class="en">CERTIFIED</span><span class="de">ZERTIFIZIERT</span></span></div>
       <div class="sp-bd">
         <span class="sk vi">CATIA V5</span><span class="sk vi">SolidWorks</span><span class="sk vi">CREO</span>
         <span class="sk vi">NX / Unigraphics</span><span class="sk">AutoCAD</span><span class="sk">ANSYS (FEA)</span>
@@ -753,19 +858,21 @@ html.js-ready .rv.d7{transition-delay:.74s;}
       </div>
     </div>
     <div class="sp m rv d4"><div class="sp-bar"></div>
-      <div class="sp-hd"><div class="spdot"></div><span class="sp-title">Visual &amp; Commercial</span><span class="sp-ct">APPLIED</span></div>
+      <div class="sp-hd"><div class="spdot"></div><span class="sp-title"><span class="en">Visual &amp; Commercial</span><span class="de">Visuell &amp; Kommerziell</span></span><span class="sp-ct"><span class="en">APPLIED</span><span class="de">ANGEWANDT</span></span></div>
       <div class="sp-bd">
         <span class="sk">After Effects</span><span class="sk">Premiere Pro</span><span class="sk">Photoshop</span>
         <span class="sk">Illustrator</span><span class="sk">DaVinci Resolve</span><span class="sk">Final Cut Pro</span>
         <span class="sk">CorelDraw</span>
-        <span class="sk dim">Nuke (familiar)</span><span class="sk dim">3D Equaliser (familiar)</span>
+        <span class="sk dim">Nuke (familiar)</span><span class="sk dim">3D Equalizer (familiar)</span>
       </div>
     </div>
   </div>
   <div class="sk-lang rv d5">
-    <span class="sk-lang-lbl">LANGUAGES</span>
-    <span class="sk hi">English — Fluent</span><span class="sk">Telugu — Native</span>
-    <span class="sk">Hindi — Proficient</span><span class="sk">German — Beginner</span>
+    <span class="sk-lang-lbl"><span class="en">LANGUAGES</span><span class="de">SPRACHEN</span></span>
+    <span class="sk hi"><span class="en">English — Fluent</span><span class="de">Englisch — Fließend</span></span>
+    <span class="sk"><span class="en">Telugu — Native</span><span class="de">Telugu — Muttersprache</span></span>
+    <span class="sk"><span class="en">Hindi — Proficient</span><span class="de">Hindi — Verhandlungssicher</span></span>
+    <span class="sk"><span class="en">German — Beginner</span><span class="de">Deutsch — Grundkenntnisse</span></span>
   </div>
 </section>
 
@@ -774,47 +881,62 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 <section class="sec" id="s-ascension">
   <div class="asc-starfield" id="ascStars"></div>
   <div class="asc-nebula"></div>
-  <div class="sec-hd rv"><span class="sec-n">03</span><span class="sec-t">Education</span></div>
+  <div class="sec-hd rv"><span class="sec-n">03</span><span class="sec-t"><span class="en">Education</span><span class="de">Ausbildung</span></span></div>
   <div class="asc-intro rv">
     <div class="asc-degree">BA Hons. Multimedia — JNAFAU</div>
-    <div class="asc-via">via ICAT Design &amp; Media College, Hyderabad &nbsp;·&nbsp; 2021 – 2026 &nbsp;·&nbsp; 208 Credits (CBCS)</div>
-    <span class="asc-badge">ANABIN-Recognised Degree</span>
+    <div class="asc-via"><span class="en">via ICAT Design &amp; Media College, Hyderabad</span><span class="de">über ICAT Design &amp; Media College, Hyderabad</span> &nbsp;·&nbsp; 2021 – 2026 &nbsp;·&nbsp; 208 Credits (CBCS)</div>
+    <span class="asc-badge"><span class="en">ANABIN-Recognised Degree</span><span class="de">ANABIN-Anerkannter Abschluss</span></span>
   </div>
   <div class="asc-spine-wrap rv d1">
     <div class="asc-spine"><div class="asc-orb"></div></div>
     <div class="edu-node rv d2">
       <div class="enode-wrap"><div class="er er3"></div><div class="er er2"></div><div class="er er1"></div><div class="ecore"></div></div>
       <div class="ecard"><div class="etrace"></div>
-        <div class="esem">SEM I – II</div><div class="etitle">Foundations · Visual Design · Digital Arts</div>
-        <div class="ebody">Core creative and digital foundations. 3D modelling fundamentals, compositional principles, typography systems, and animation basics establishing the full creative vocabulary.</div>
+        <div class="esem">SEM I – II</div><div class="etitle"><span class="en">Foundations · Visual Design · Digital Arts</span><span class="de">Grundlagen · Visuelles Design · Digitale Künste</span></div>
+        <div class="ebody">
+          <span class="en">Core creative and digital foundations. 3D modelling fundamentals, compositional principles, typography systems, and animation basics establishing the full creative vocabulary.</span>
+          <span class="de">Zentrale kreative und digitale Grundlagen. Grundlagen der 3D-Modellierung, Kompositionsprinzipien, Typografiesysteme und Animationsgrundlagen, die das vollständige kreative Vokabular aufbauen.</span>
+        </div>
       </div>
     </div>
     <div class="edu-node rv d3">
       <div class="enode-wrap"><div class="er er3"></div><div class="er er2"></div><div class="er er1"></div><div class="ecore"></div></div>
       <div class="ecard"><div class="etrace"></div>
-        <div class="esem">SEM III</div><div class="etitle">3D Modelling · Rigging · Compositing</div>
-        <div class="ebody">Character rigging, 2D/3D compositing, and complete scene assembly from modelled assets through to final rendered output.</div>
+        <div class="esem">SEM III</div><div class="etitle"><span class="en">3D Modelling · Rigging · Compositing</span><span class="de">3D-Modellierung · Rigging · Compositing</span></div>
+        <div class="ebody">
+          <span class="en">Character rigging, 2D/3D compositing, and complete scene assembly from modelled assets through to final rendered output.</span>
+          <span class="de">Charakter-Rigging, 2D-/3D-Compositing und vollständiger Szenenaufbau von modellierten Assets bis zur finalen Render-Ausgabe.</span>
+        </div>
       </div>
     </div>
     <div class="edu-node rv d4">
       <div class="enode-wrap"><div class="er er3"></div><div class="er er2"></div><div class="er er1"></div><div class="ecore"></div></div>
       <div class="ecard"><div class="etrace"></div>
-        <div class="esem">SEM IV</div><div class="etitle">Advanced Modelling · PBR Workflow · Arnold Rendering</div>
-        <div class="ebody">Physically-based rendering pipeline: PBR material authoring, UV-precise texturing, lighting setups, and production renders in Arnold.</div>
+        <div class="esem">SEM IV</div><div class="etitle"><span class="en">Advanced Modelling · PBR Workflow · Arnold Rendering</span><span class="de">Fortgeschrittene Modellierung · PBR Workflow · Arnold Rendering</span></div>
+        <div class="ebody">
+          <span class="en">Physically-based rendering pipeline: PBR material authoring, UV-precise texturing, lighting setups, and production renders in Arnold.</span>
+          <span class="de">Pipeline für physikbasiertes Rendern (PBR): PBR-Materialerstellung, UV-präzise Texturierung, Beleuchtungs-Setups und Produktions-Renders in Arnold.</span>
+        </div>
       </div>
     </div>
     <div class="edu-node rv d5">
       <div class="enode-wrap"><div class="er er3"></div><div class="er er2"></div><div class="er er1"></div><div class="ecore"></div></div>
       <div class="ecard"><div class="etrace"></div>
-        <div class="esem">SEM V</div><div class="etitle">Digital Sculpting (ZBrush) · Character Modelling · High→Low Pipeline</div>
-        <div class="ebody">Portrait sculpting, organic and hard surface sculpting, biped and quadruped character modelling — full high-to-low poly bake pipeline across every discipline.</div>
+        <div class="esem">SEM V</div><div class="etitle"><span class="en">Digital Sculpting (ZBrush) · Character Modelling · High→Low Pipeline</span><span class="de">Digital Sculpting (ZBrush) · Charaktermodellierung · High→Low Pipeline</span></div>
+        <div class="ebody">
+          <span class="en">Portrait sculpting, organic and hard surface sculpting, biped and quadruped character modelling — full high-to-low poly bake pipeline across every discipline.</span>
+          <span class="de">Porträtskulptur, organisches und Hard-Surface-Sculpting, zweibeinige und vierbeinige Charaktermodellierung – vollständige High-to-Low-Poly Bake-Pipeline in jeder Disziplin.</span>
+        </div>
       </div>
     </div>
     <div class="edu-node rv d6">
       <div class="enode-wrap"><div class="er er3"></div><div class="er er2"></div><div class="er er1"></div><div class="ecore"></div></div>
       <div class="ecard"><div class="etrace"></div>
-        <div class="esem">SEM VI — CAPSTONE</div><div class="etitle">3D Environment Design (UE4) · Cinematic Camera · Industry Placement</div>
-        <div class="ebody">Terrain generation, landscape sculpting, foliage and environment systems, PBR materials in UE4, cinematic camera blocking and Sequencer. Final semester: industry placement at The Classic Partnership Inc., Toronto — 9+ international client accounts across Canada and Puerto Rico.</div>
+        <div class="esem">SEM VI — CAPSTONE</div><div class="etitle"><span class="en">3D Environment Design (UE4) · Cinematic Camera · Industry Placement</span><span class="de">3D Environment Design (UE4) · Filmkamera · Industriepraktikum</span></div>
+        <div class="ebody">
+          <span class="en">Terrain generation, landscape sculpting, foliage and environment systems, PBR materials in UE4, cinematic camera blocking and Sequencer. Final semester: industry placement at The Classic Partnership Inc., Toronto — 9+ international client accounts across Canada and Puerto Rico.</span>
+          <span class="de">Terrain-Generierung, Landschafts-Sculpting, Vegetations- und Umgebungssysteme, PBR-Materialien in UE4, filmisches Kamera-Blocking und Sequencer. Letztes Semester: Industriepraktikum bei The Classic Partnership Inc., Toronto – Betreuung von über 9 internationalen Kundenkonten in Kanada und Puerto Rico.</span>
+        </div>
       </div>
     </div>
   </div>
@@ -823,33 +945,33 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 <div class="runediv" aria-hidden="true"><div class="rune-g">✦</div></div>
 
 <section class="sec" id="s-seals">
-  <div class="sec-hd rv"><span class="sec-n">04</span><span class="sec-t">Certifications</span></div>
+  <div class="sec-hd rv"><span class="sec-n">04</span><span class="sec-t"><span class="en">Certifications</span><span class="de">Zertifizierungen</span></span></div>
   <div style="font-family:'Cinzel','Palatino Linotype',serif;font-size:7.5px;letter-spacing:4.5px;text-transform:uppercase;color:#a090c0;margin-bottom:28px;display:flex;align-items:center;gap:16px;" class="rv">
-    CREDENTIALS EARNED <span style="flex:1;height:1px;background:linear-gradient(to right,rgba(200,150,40,.14),transparent);display:inline-block;"></span>
+    <span class="en">CREDENTIALS EARNED</span><span class="de">ERWORBENE QUALIFIKATIONEN</span> <span style="flex:1;height:1px;background:linear-gradient(to right,rgba(200,150,40,.14),transparent);display:inline-block;"></span>
   </div>
   <div class="seals-grid">
     <div class="seal s1 rv d1"><div class="seal-trace"></div><div class="seal-glow"></div><div class="seal-corner"></div>
-      <div class="seal-tag"></div><span class="seal-icon">⬡</span>
-      <div class="seal-name">ASDC Certificate — Automotive Designing &amp; Manufacturing</div>
-      <div class="seal-body">Automotive Skills Development Council<br>Skill India / Government of India</div>
+      <div class="seal-tag"><span class="en">✦ ACHIEVED</span><span class="de">✦ ERREICHT</span></div><span class="seal-icon">⬡</span>
+      <div class="seal-name"><span class="en">ASDC Certificate — Automotive Designing &amp; Manufacturing</span><span class="de">ASDC-Zertifikat — Automobildesign &amp; Konstruktion</span></div>
+      <div class="seal-body"><span class="en">Automotive Skills Development Council<br>Skill India / Government of India</span><span class="de">Automotive Skills Development Council<br>Skill India / Indische Regierung</span></div>
       <div class="seal-year">2026</div>
     </div>
     <div class="seal s2 rv d2"><div class="seal-trace"></div><div class="seal-glow"></div><div class="seal-corner"></div>
-      <div class="seal-tag"></div><span class="seal-icon">⬡</span>
-      <div class="seal-name">BOSCH JCC Industrial Certificate</div>
-      <div class="seal-body">BOSCH Joint Competence Centre<br>Automotive Manufacturing Specialist</div>
+      <div class="seal-tag"><span class="en">✦ ACHIEVED</span><span class="de">✦ ERREICHT</span></div><span class="seal-icon">⬡</span>
+      <div class="seal-name"><span class="en">BOSCH JCC Industrial Certificate</span><span class="de">BOSCH JCC Industriezertifikat</span></div>
+      <div class="seal-body"><span class="en">BOSCH Joint Competence Centre<br>Automotive Manufacturing Specialist</span><span class="de">BOSCH Joint Competence Centre<br>Spezialist für Automobilbau</span></div>
       <div class="seal-year">2026</div>
     </div>
     <div class="seal s3 rv d3"><div class="seal-trace"></div><div class="seal-glow"></div><div class="seal-corner"></div>
-      <div class="seal-tag"></div><span class="seal-icon">⬡</span>
-      <div class="seal-name">IIT Guwahati E&amp;ICT Academy — Program Endorsement</div>
-      <div class="seal-body">Electronics &amp; ICT Academy<br>Indian Institute of Technology Guwahati</div>
+      <div class="seal-tag"><span class="en">✦ ACHIEVED</span><span class="de">✦ ERREICHT</span></div><span class="seal-icon">⬡</span>
+      <div class="seal-name"><span class="en">IIT Guwahati E&amp;ICT Academy — Program Endorsement</span><span class="de">IIT Guwahati E&amp;ICT Academy — Programmbefürwortung</span></div>
+      <div class="seal-body"><span class="en">Electronics &amp; ICT Academy<br>Indian Institute of Technology Guwahati</span><span class="de">Electronics &amp; ICT Academy<br>Indian Institute of Technology Guwahati</span></div>
       <div class="seal-year">2026</div>
     </div>
     <div class="seal s4 rv d4"><div class="seal-trace"></div><div class="seal-glow"></div><div class="seal-corner"></div>
-      <div class="seal-tag"></div><span class="seal-icon">⬡</span>
+      <div class="seal-tag"><span class="en">✦ ACHIEVED</span><span class="de">✦ ERREICHT</span></div><span class="seal-icon">⬡</span>
       <div class="seal-name">BA Hons. Multimedia — JNAFAU</div>
-      <div class="seal-body">Jawaharlal Nehru Architecture &amp; Fine Arts University<br>ANABIN-Recognised · 208 Credits (CBCS)</div>
+      <div class="seal-body"><span class="en">Jawaharlal Nehru Architecture &amp; Fine Arts University<br>ANABIN-Recognised · 208 Credits (CBCS)</span><span class="de">Jawaharlal Nehru Architecture &amp; Fine Arts University<br>ANABIN-Anerkannt · 208 Credits (CBCS)</span></div>
       <div class="seal-year">2026</div>
     </div>
   </div>
@@ -857,12 +979,20 @@ html.js-ready .rv.d7{transition-delay:.74s;}
 
 <footer class="shrine">
   <div class="shrine-name">SUMANTH</div>
-  <div class="shrine-meta">3D ARTIST · ENVIRONMENT DESIGNER<br>HYDERABAD, INDIA → GERMANY 2027<br>BA HONS. MULTIMEDIA · JNAFAU · 2026</div>
+  <div class="shrine-meta"><span class="en">3D ARTIST · ENVIRONMENT DESIGNER<br>HYDERABAD, INDIA<br>BA HONS. MULTIMEDIA · JNAFAU · 2026</span><span class="de">3D-ARTIST · ENVIRONMENT DESIGNER<br>HYDERABAD, INDIEN<br>BA HONS. MULTIMEDIA · JNAFAU · 2026</span></div>
 </footer>
 
 </div>
 
 <script>
+// ── LANGUAGE TOGGLE SCRIPT ──
+window.setLang = function(l) {
+  document.body.className = document.body.className.replace(/lang-\w+/, '').trim();
+  document.body.classList.add('lang-' + l);
+  document.querySelectorAll('.lo').forEach(function(el){ el.classList.remove('act'); });
+  document.getElementById('btn-' + l).classList.add('act');
+}
+
 window.addEventListener('DOMContentLoaded', function(){
 
 // ── REVEAL ──
@@ -902,14 +1032,14 @@ document.querySelectorAll('.seal').forEach(function(el){slObs.observe(el);});
 var enObs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('ok');});},{threshold:0});
 document.querySelectorAll('.edu-node').forEach(function(el){enObs.observe(el);});
 
-// ── LETTER SPLIT ──
-document.querySelectorAll('.sec-t').forEach(function(el){
+// ── BILINGUAL LETTER SPLIT ──
+document.querySelectorAll('.sec-t .en, .sec-t .de').forEach(function(el){
   var t=el.textContent;
   el.innerHTML=t.split('').map(function(ch,i){
-    return '<span class="L" style="color:#f2ecff;animation-delay:'+(i*.042).toFixed(2)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';
+    return '<span class="L" style="color:var(--t0);animation-delay:'+(i*.042).toFixed(2)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';
   }).join('');
-  rvObs.observe(el);
 });
+document.querySelectorAll('.sec-t').forEach(function(el){ rvObs.observe(el); });
 
 // ── ORACLE NAV ──
 (function(){
