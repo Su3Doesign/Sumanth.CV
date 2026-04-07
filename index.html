@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@700;900&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── FONT FALLBACKS (if Google Fonts fails to load) ── */
+  /* ── FONT FALLBACKS (if Google Fonts fails to load) ── */
 @font-face {
   font-family: 'Cinzel';
   src: url('fonts/cinzel-v26-latin-700.woff2') format('woff2');
@@ -52,7 +52,7 @@
   src: url('fonts/jetbrains-mono-v24-latin-regular.woff2') format('woff2');
   font-weight: 400; font-display: swap;
 }
-
+/* ── FONT FALLBACKS (if Google Fonts fails to load) ── */
 body{font-family:'Space Grotesk','Segoe UI',Arial,sans-serif;}
 .h-name,.shrine-name,.mani-text,.pg-title,.pz-name,.sec-t,.x-role,.seal-name,.asc-degree,.etitle{font-family:'Cinzel Decorative','Palatino Linotype','Book Antiqua',Palatino,serif;}
 .h-status,.x-date,.xt,.hc,.sp-title,.sp-ct,.sk-lang-lbl,.seal-tag,.seal-body,.seal-year,.chr-agency-sub,.midea-cap,.cl-note,.r-sub,.char-hud,.pz-num,.pz-tools,.asc-via,.esem,.sec-n,.asc-badge,.pg-sub{font-family:'JetBrains Mono','Courier New',monospace;}
@@ -72,8 +72,26 @@ body{background:var(–bg);color:var(–t1);font-size:14px;line-height:1.6;overf
 ::-webkit-scrollbar{width:2px;}
 ::-webkit-scrollbar-thumb{background:var(–g1);}
 
-/* ── AURORA ── */
-#aurora{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;}
+/* ── AURORA: CSS-ONLY, NO CANVAS, WORKS EVERYWHERE ── */
+html{background:#02020c;}
+body{background:#02020c;}
+body::before{
+content:’’;
+position:fixed;inset:0;z-index:0;pointer-events:none;
+background:
+radial-gradient(ellipse 65% 55% at 15% 72%,rgba(200,150,40,.10) 0%,transparent 65%),
+radial-gradient(ellipse 52% 48% at 86% 18%,rgba(104,64,176,.09) 0%,transparent 62%),
+radial-gradient(ellipse 48% 42% at 52% 52%,rgba(52,128,176,.07) 0%,transparent 58%),
+radial-gradient(ellipse 40% 35% at 28% 25%,rgba(200,150,40,.06) 0%,transparent 55%),
+radial-gradient(ellipse 38% 32% at 74% 80%,rgba(104,64,176,.06) 0%,transparent 52%);
+animation:auroraShift 20s ease-in-out infinite;
+}
+@keyframes auroraShift{
+0%,100%{opacity:.7;transform:scale(1) translate(0,0);}
+25%{opacity:1;transform:scale(1.06) translate(1.5%,-1%);}
+50%{opacity:.8;transform:scale(.97) translate(-1%,1.5%);}
+75%{opacity:1;transform:scale(1.04) translate(-.5%,-1.5%);}
+}
 
 /* ── ORACLE NAV ── */
 #oracle{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:10px;align-items:center;}
@@ -122,13 +140,19 @@ body{background:var(–bg);color:var(–t1);font-size:14px;line-height:1.6;overf
 @keyframes blink{0%,100%{box-shadow:0 0 5px var(–g1);}50%{box-shadow:0 0 18px var(–g1),0 0 32px rgba(200,150,40,.3);}}
 @keyframes fiu{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
 
-/* NAME — main text */
-.h-name-wrap{position:relative;display:inline-block;animation:conjure 1.3s cubic-bezier(.16,1,.3,1) .25s both;}
-@keyframes conjure{from{opacity:0;filter:blur(20px);letter-spacing:18px;}to{opacity:1;filter:blur(0);letter-spacing:-2px;}}
-.h-name{font-size:clamp(60px,12vw,185px);font-weight:900;line-height:.86;letter-spacing:-2px;color:var(–t0);display:block;position:relative;z-index:1;}
-/* Shimmer overlay — pure HTML span, not pseudo-element */
-.h-name-shimmer{position:absolute;inset:0;z-index:2;pointer-events:none;font-size:clamp(60px,12vw,185px);font-weight:900;line-height:.86;letter-spacing:-2px;background:linear-gradient(90deg,transparent 0%,rgba(240,192,64,.55) 45%,rgba(200,150,40,.38) 55%,transparent 100%);background-size:250%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shim 6s ease-in-out 2.5s infinite;}
-@keyframes shim{0%,100%{background-position:200%;}50%{background-position:-50%;}}
+/* ── NAME: single element, shimmer + conjure on same font ── */
+.h-name-wrap{display:inline-block;animation:conjure 1.3s cubic-bezier(.16,1,.3,1) .25s both;}
+@keyframes conjure{from{opacity:0;filter:blur(18px);letter-spacing:16px;}to{opacity:1;filter:blur(0);letter-spacing:-2px;}}
+.h-name{
+font-size:clamp(60px,12vw,185px);font-weight:900;line-height:.86;letter-spacing:-2px;
+display:block;position:relative;
+background:linear-gradient(90deg,var(–t0) 0%,var(–t0) 30%,var(–g2) 48%,var(–t0) 60%,var(–t0) 100%);
+background-size:280%;
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;color:transparent;
+animation:nameShim 7s ease-in-out 2s infinite;
+}
+@keyframes nameShim{0%,100%{background-position:200% center;}50%{background-position:-20% center;}}
 
 .h-div{width:260px;height:1px;margin:18px 0 22px;background:linear-gradient(to right,var(–g1),var(–v1),transparent);animation:fiu .9s .75s both;position:relative;}
 .h-div::before{content:’’;position:absolute;left:-1px;top:-3.5px;width:8px;height:8px;border-radius:50%;background:var(–g1);box-shadow:0 0 12px var(–g1);}
@@ -465,7 +489,7 @@ body{background:#fff;color:#111;}
 </head>
 <body>
 
-<canvas id="aurora"></canvas>
+<!-- aurora handled by CSS -->
 
 <div id="oracle">
   <div class="odot on" data-l="HERO" data-s="s-hero"></div><div class="oline"></div>
@@ -502,7 +526,6 @@ body{background:#fff;color:#111;}
     <!-- Name uses a wrapper + shimmer span — no pseudo-element -->
     <div class="h-name-wrap">
       <span class="h-name">SUMANTH</span>
-      <span class="h-name-shimmer" aria-hidden="true">SUMANTH</span>
     </div>
     <div class="h-div"></div>
     <div class="h-role"><strong>3D Environment Design</strong> &nbsp;·&nbsp; Digital Sculpting &nbsp;·&nbsp; Character Modelling<br><span style="display:block;margin-top:4px;">Hyderabad, India &nbsp;→&nbsp; Germany, 2027</span></div>
@@ -844,67 +867,47 @@ body{background:#fff;color:#111;}
 <script>
 window.addEventListener('DOMContentLoaded', function() {
 
-// ── AURORA CANVAS ──
-(function(){
-  var c = document.getElementById('aurora');
-  if (!c) return;
-  var ctx = c.getContext('2d');
-  var blobs = [
-    {x:.15,y:.7,r:.55,col:'200,150,40',sp:.00012,ph:0},
-    {x:.85,y:.2,r:.48,col:'104,64,176',sp:.00015,ph:2.1},
-    {x:.5,y:.5,r:.42,col:'52,128,176',sp:.00010,ph:4.2},
-    {x:.28,y:.28,r:.38,col:'200,150,40',sp:.00018,ph:1.1},
-    {x:.72,y:.82,r:.40,col:'104,64,176',sp:.00014,ph:3.3}
-  ];
-  function resize(){ c.width = window.innerWidth; c.height = window.innerHeight; }
-  var t = 0;
-  function draw(){
-    t += 16;
-    ctx.clearRect(0, 0, c.width, c.height);
-    blobs.forEach(function(b){
-      var x = (b.x + Math.sin(t*b.sp + b.ph)*.13) * c.width;
-      var y = (b.y + Math.cos(t*b.sp*.75 + b.ph)*.10) * c.height;
-      var r = b.r * Math.min(c.width, c.height);
-      var g = ctx.createRadialGradient(x,y,0,x,y,r);
-      g.addColorStop(0,'rgba('+b.col+',0.06)');
-      g.addColorStop(1,'rgba('+b.col+',0)');
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  resize(); draw();
-  window.addEventListener('resize', resize);
-})();
+// ── SCROLL REVEAL — threshold 0, fires as soon as 1px is visible ──
+function revealEl(el){ el.classList.add('ok'); }
 
-// ── SCROLL REVEAL ──
 var rvObs = new IntersectionObserver(function(entries){
-  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('ok'); });
-}, {threshold: 0.07});
+  entries.forEach(function(e){ if(e.isIntersecting) revealEl(e.target); });
+}, {threshold: 0, rootMargin: '0px 0px -40px 0px'});
+
 document.querySelectorAll('.rv').forEach(function(el){ rvObs.observe(el); });
 
-// ── SKILL PANEL OBSERVER (for sp-bar) ──
+// Also immediately reveal anything already in the viewport on load
+function revealVisible(){
+  document.querySelectorAll('.rv:not(.ok)').forEach(function(el){
+    var r = el.getBoundingClientRect();
+    if(r.top < window.innerHeight && r.bottom > 0) revealEl(el);
+  });
+}
+revealVisible();
+window.addEventListener('scroll', revealVisible, {passive:true});
+
+// ── SKILL PANEL BARS ──
 var spObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('ok'); });
-}, {threshold: 0.15});
+}, {threshold: 0});
 document.querySelectorAll('.sp').forEach(function(el){ spObs.observe(el); });
 
-// ── XCARD OBSERVER ──
+// ── XCARD TRACES ──
 var xcObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('ok'); });
-}, {threshold: 0.1});
+}, {threshold: 0});
 document.querySelectorAll('.xcard').forEach(function(el){ xcObs.observe(el); });
 
-// ── SEAL OBSERVER ──
+// ── SEAL TRACES ──
 var slObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('ok'); });
-}, {threshold: 0.1});
+}, {threshold: 0});
 document.querySelectorAll('.seal').forEach(function(el){ slObs.observe(el); });
 
-// ── EDU NODE OBSERVER ──
+// ── EDU NODES ──
 var enObs = new IntersectionObserver(function(entries){
   entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('ok'); });
-}, {threshold: 0.1});
+}, {threshold: 0});
 document.querySelectorAll('.edu-node').forEach(function(el){ enObs.observe(el); });
 
 // ── LETTER SPLIT FOR SECTION TITLES ──
@@ -929,7 +932,7 @@ document.querySelectorAll('.sec-t').forEach(function(el){
         });
       }
     });
-  }, {threshold: 0.35});
+  }, {threshold: 0.3});
   secs.forEach(function(item){ navObs.observe(item.sec); });
   dots.forEach(function(d){
     d.addEventListener('click', function(){
@@ -948,13 +951,13 @@ document.querySelectorAll('.sec-t').forEach(function(el){
   var dxArr = [-40,-24,-12,8,22,36,-28,14,-6,30,-18,26];
   for(var i=0;i<40;i++){
     var d = document.createElement('div');
-    var s = 1.2+Math.random()*2.8;
+    var sz = (1.2+Math.random()*2.8).toFixed(1);
     var dur = (3.2+Math.random()*5.8).toFixed(1);
     var delay = (Math.random()*parseFloat(dur)).toFixed(1);
-    var ddx = dxArr[i%dxArr.length]+(Math.random()*12-6);
-    var col = Math.random()>.42 ? 'rgba(218,138,26,' : 'rgba(195,82,16,';
+    var ddx = (dxArr[i%dxArr.length]+(Math.random()*12-6)).toFixed(1);
+    var col = Math.random()>.42 ? '218,138,26' : '195,82,16';
     var op = (.48+Math.random()*.42).toFixed(2);
-    d.style.cssText = 'position:absolute;left:'+Math.random()*100+'%;top:'+(50+Math.random()*50)+'%;width:'+s+'px;height:'+s+'px;background:'+col+op+');border-radius:50%;pointer-events:none;animation:efp '+dur+'s '+delay+'s infinite ease-out;--dx:'+ddx.toFixed(1)+'px;';
+    d.style.cssText = 'position:absolute;left:'+Math.random()*100+'%;top:'+(50+Math.random()*50)+'%;width:'+sz+'px;height:'+sz+'px;background:rgba('+col+','+op+');border-radius:50%;pointer-events:none;animation:efp '+dur+'s '+delay+'s infinite ease-out;--dx:'+ddx+'px;';
     c.appendChild(d);
   }
 })();
@@ -962,9 +965,9 @@ document.querySelectorAll('.sec-t').forEach(function(el){
 // ── FUDO RUNE GLYPHS ──
 (function(){
   var c = document.getElementById('fudoRunes'); if(!c) return;
-  var glyphs = ['᚛','ᚁ','ᚂ','ᚃ','ᚄ','⊕','⊗','✦','⬡','◈','⊞','⊙'];
+  var glyphs = ['⊕','⊗','✦','⬡','◈','⊞','⊙','✧','⊛','❋','⍟','✦'];
   var style = document.createElement('style');
-  style.textContent = '@keyframes rflt{0%{transform:translateY(0) rotate(0) scale(1);opacity:0;}10%{opacity:1;}90%{opacity:.3;}100%{transform:translateY(-75px) rotate(12deg) scale(.7);opacity:0;}}';
+  style.textContent = '@keyframes rflt{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:0;}10%{opacity:.9;}90%{opacity:.25;}100%{transform:translateY(-75px) rotate(12deg) scale(.7);opacity:0;}}';
   document.head.appendChild(style);
   for(var i=0;i<12;i++){
     var d = document.createElement('div');
@@ -980,57 +983,37 @@ document.querySelectorAll('.sec-t').forEach(function(el){
 (function(){
   var c = document.getElementById('charVx'); if(!c) return;
   var style = document.createElement('style');
-  style.textContent = '@keyframes vxp{0%,100%{opacity:.28;transform:scale(1);}50%{opacity:.88;transform:scale(1.9);}}';
+  style.textContent = '@keyframes vxp{0%,100%{opacity:.25;transform:scale(1);}50%{opacity:.85;transform:scale(1.9);}}';
   document.head.appendChild(style);
-  var g = 60;
-  var cols = Math.ceil(window.innerWidth/g)+1;
-  var rows = Math.ceil(window.innerHeight*.9/g)+1;
+  var g=60, cols=Math.ceil(window.innerWidth/g)+1, rows=20;
   for(var r=0;r<rows;r++){
     for(var col=0;col<cols;col++){
       if(Math.random()>.36) continue;
       var d = document.createElement('div');
-      var s = Math.random()>.74 ? 3 : 1.8;
-      var op = (.18+Math.random()*.42).toFixed(2);
-      var dur = (2.2+Math.random()*3).toFixed(1);
-      var delay = (Math.random()*3).toFixed(1);
-      d.style.cssText = 'position:absolute;left:'+(col*g)+'px;top:'+(r*g)+'px;width:'+s+'px;height:'+s+'px;background:rgba(52,128,176,'+op+');border-radius:50%;pointer-events:none;animation:vxp '+dur+'s '+delay+'s infinite;';
+      var sz = Math.random()>.74 ? '3' : '1.8';
+      d.style.cssText = 'position:absolute;left:'+(col*g)+'px;top:'+(r*g)+'px;width:'+sz+'px;height:'+sz+'px;background:rgba(52,128,176,'+(.18+Math.random()*.42).toFixed(2)+');border-radius:50%;pointer-events:none;animation:vxp '+(2.2+Math.random()*3).toFixed(1)+'s '+(Math.random()*3).toFixed(1)+'s infinite;';
       c.appendChild(d);
     }
   }
 })();
 
-// ── ENV STAR LAYER (CSS-based, no canvas) ──
+// ── ENV + ASC STARS ──
 (function(){
-  var c = document.getElementById('envStarLayer'); if(!c) return;
   var style = document.createElement('style');
   style.textContent = '@keyframes stw{0%,100%{opacity:var(--op);}50%{opacity:calc(var(--op)*2.5);}}';
   document.head.appendChild(style);
-  for(var i=0;i<160;i++){
-    var d = document.createElement('div');
-    var s = Math.random()>.88 ? 1.5 : Math.random()>.62 ? 1 : .6;
-    var op = (.05+Math.random()*.3).toFixed(2);
-    var dur = (1.8+Math.random()*5).toFixed(1);
-    var delay = (Math.random()*7).toFixed(1);
-    d.style.cssText = 'position:absolute;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+s+'px;height:'+s+'px;background:white;border-radius:50%;--op:'+op+';animation:stw '+dur+'s '+delay+'s infinite;';
-    c.appendChild(d);
+  function makeStars(id, count){
+    var c = document.getElementById(id); if(!c) return;
+    for(var i=0;i<count;i++){
+      var d = document.createElement('div');
+      var sz = Math.random()>.88 ? '1.5' : Math.random()>.62 ? '1' : '.6';
+      var op = (.04+Math.random()*.28).toFixed(2);
+      d.style.cssText = 'position:absolute;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;background:#fff;border-radius:50%;--op:'+op+';animation:stw '+(1.8+Math.random()*5).toFixed(1)+'s '+(Math.random()*7).toFixed(1)+'s infinite;';
+      c.appendChild(d);
+    }
   }
-})();
-
-// ── EDUCATION STARS ──
-(function(){
-  var c = document.getElementById('ascStars'); if(!c) return;
-  var style = document.createElement('style');
-  style.textContent = '@keyframes asw{0%,100%{opacity:var(--op);}50%{opacity:calc(var(--op)*2.4);}}';
-  document.head.appendChild(style);
-  for(var i=0;i<220;i++){
-    var d = document.createElement('div');
-    var s = Math.random()>.88 ? 1.6 : Math.random()>.62 ? 1 : .55;
-    var op = (.03+Math.random()*.18).toFixed(2);
-    var dur = (1.8+Math.random()*5).toFixed(1);
-    var delay = (Math.random()*7).toFixed(1);
-    d.style.cssText = 'position:absolute;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+s+'px;height:'+s+'px;background:white;border-radius:50%;--op:'+op+';animation:asw '+dur+'s '+delay+'s infinite;';
-    c.appendChild(d);
-  }
+  makeStars('envStarLayer', 140);
+  makeStars('ascStars', 200);
 })();
 
 }); // end DOMContentLoaded
