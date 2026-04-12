@@ -15,29 +15,28 @@ document.addEventListener('mousemove', (e) => {
 
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.08);
+// Updated Fog to match the new premium Navy background
+scene.fog = new THREE.FogExp2(0x050814, 0.05);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
-// Removed toneMapping that was washing out your baked textures
 container.appendChild(renderer.domElement);
 camera.position.z = 5;
 
-// --- Lighting (Fixed to show your baked model) ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Brightened up
+// --- Lighting ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); 
 scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
 directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
-
-const hakiLight = new THREE.PointLight(0x8A2BE2, 0, 8); // Deep Purple
+const hakiLight = new THREE.PointLight(0x8A2BE2, 0, 8); 
 scene.add(hakiLight);
 
-// --- The Interactive Void (Forge Embers) ---
+// --- Forge Embers ---
 const voidParticlesGeometry = new THREE.BufferGeometry();
-const voidParticlesCount = 600;
+const voidParticlesCount = 400;
 const voidPosArray = new Float32Array(voidParticlesCount * 3);
 for(let i = 0; i < voidParticlesCount * 3; i++) {
     voidPosArray[i] = (Math.random() - 0.5) * 15;
@@ -49,13 +48,12 @@ const voidParticlesMaterial = new THREE.PointsMaterial({
 const voidParticles = new THREE.Points(voidParticlesGeometry, voidParticlesMaterial);
 scene.add(voidParticles);
 
-// --- Load The Katana (Fixed Materials) ---
+// --- Load The Katana ---
 const loader = new GLTFLoader();
 let katanaModel;
 
 loader.load('models/katana.glb', (gltf) => {
     katanaModel = gltf.scene;
-    // Removed the material override so your Blender textures show up perfectly
     katanaModel.scale.set(1, 1, 1); 
     katanaModel.position.set(0, 0, 0);
     scene.add(katanaModel);
@@ -63,12 +61,10 @@ loader.load('models/katana.glb', (gltf) => {
 
 // --- Animation Loop ---
 let targetRotationY = 0; let targetRotationX = 0;
-const clock = new THREE.Clock();
 
 function animate() {
     requestAnimationFrame(animate);
 
-    // Embers drift
     const voidPos = voidParticlesGeometry.attributes.position.array;
     for(let i = 1; i < voidParticlesCount * 3; i += 3) {
         voidPos[i] += 0.005; 
@@ -111,13 +107,13 @@ const sliceFlash = document.getElementById('slice-flash');
 
 paperContainer.addEventListener('mousedown', (e) => {
     isDragging = true; startX = e.clientX; startY = e.clientY;
-    cursor.style.transform = "translate(-50%, -50%) scale(0.5)"; 
+    cursor.style.backgroundColor = "var(--aged-gold)"; // Cursor fills in when dragging
 });
 
 paperContainer.addEventListener('mouseup', (e) => {
     if (!isDragging) return;
     isDragging = false;
-    cursor.style.transform = "translate(-50%, -50%) scale(1)";
+    cursor.style.backgroundColor = "transparent";
     const endX = e.clientX; const endY = e.clientY;
     if (Math.hypot(endX - startX, endY - startY) > 150) triggerSlice(startX, startY, endX, endY);
 });
@@ -173,7 +169,7 @@ function triggerSlice(sx, sy, ex, ey) {
       .to("#void-content", { opacity: 1, duration: 1 }, "-=0.5");
 }
 
-// --- ACT 2: Cinematic Framing & SCROLL-TRIGGERED SHEATHING ---
+// --- ACT 2: FIXED HORIZONTAL ROTATION & SCROLL ---
 const continueBtn = document.getElementById('continue-text');
 
 continueBtn.addEventListener('click', () => {
@@ -183,43 +179,41 @@ continueBtn.addEventListener('click', () => {
     const tl = gsap.timeline();
     tl.to("#void-content", { opacity: 0, duration: 0.5 });
 
-    // 1. Move to a safe, visible, cinematic horizontal pose (Z is pulled back to 2.5)
+    // FIX: Rotates Z axis to lay the sword horizontally. 
+    // Depending on your Blender export, Z rotates it left/right.
     tl.to(katanaModel.position, { 
         x: 0, y: 0, z: 2.5, duration: 1.5, ease: "power3.inOut" 
     }, "-=0.2")
     .to(katanaModel.rotation, { 
-        x: 0, y: Math.PI / 2, z: 0.1, duration: 1.5, ease: "power3.inOut" 
+        x: 0, 
+        y: 0, 
+        z: -Math.PI / 2, // Rotates 90 degrees to lay perfectly flat
+        duration: 1.5, 
+        ease: "power3.inOut" 
     }, "<"); 
 
-    // 2. Unlock scrolling and tie the Katana movement to the mouse wheel!
     tl.call(() => {
-        document.body.style.overflow = "auto"; // Allows scrolling
-        document.getElementById('scroll-track').style.display = "block"; // Activates the scroll bar
+        document.body.style.overflow = "auto"; 
+        document.getElementById('scroll-track').style.display = "block"; 
 
-        // As you scroll down, the katana slides off to the left (simulating sheathing)
+        // GSAP ScrollTrigger
         gsap.to(katanaModel.position, {
-            x: -8, // Slides way off screen to the left
+            x: -8, // Slides to the left
             ease: "none",
             scrollTrigger: {
                 trigger: "#scroll-track",
                 start: "top top",
-                end: "80% bottom", // Finish sliding right before you hit the bottom of the page
-                scrub: 1 // Makes it buttery smooth and tied exactly to your wheel
+                end: "80% bottom", 
+                scrub: 1 
             }
         });
 
-        // 3. The Anime Flash Impact at the bottom of the scroll
+        // Flash Impact at bottom
         ScrollTrigger.create({
             trigger: "#scroll-track",
-            start: "90% bottom", // Triggers at the very end of the scroll
-            onEnter: () => {
-                gsap.to("#flash-bang", { opacity: 1, duration: 0.1 });
-                // We will build Act 3 (The Gallery) here next!
-            },
-            onLeaveBack: () => {
-                // If you scroll back up, remove the flash
-                gsap.to("#flash-bang", { opacity: 0, duration: 0.1 });
-            }
+            start: "90% bottom",
+            onEnter: () => gsap.to("#flash-bang", { opacity: 1, duration: 0.1 }),
+            onLeaveBack: () => gsap.to("#flash-bang", { opacity: 0, duration: 0.1 })
         });
     });
 });
