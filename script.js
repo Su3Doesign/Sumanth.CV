@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// Initialize GSAP ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
 const cursor = document.getElementById('custom-cursor');
@@ -15,7 +14,6 @@ document.addEventListener('mousemove', (e) => {
 
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
-// Updated Fog to match the new premium Navy background
 scene.fog = new THREE.FogExp2(0x050814, 0.05);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -31,10 +29,8 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
 directionalLight.position.set(5, 5, 5);
 scene.add(directionalLight);
-const hakiLight = new THREE.PointLight(0x8A2BE2, 0, 8); 
-scene.add(hakiLight);
 
-// --- Forge Embers ---
+// --- Forge Embers (Background) ---
 const voidParticlesGeometry = new THREE.BufferGeometry();
 const voidParticlesCount = 400;
 const voidPosArray = new Float32Array(voidParticlesCount * 3);
@@ -47,6 +43,34 @@ const voidParticlesMaterial = new THREE.PointsMaterial({
 });
 const voidParticles = new THREE.Points(voidParticlesGeometry, voidParticlesMaterial);
 scene.add(voidParticles);
+
+// --- RESTORED: HAKI VFX (Smoke & Lightning) ---
+const hakiLight = new THREE.PointLight(0x8A2BE2, 0, 8); 
+scene.add(hakiLight);
+
+// Purple Haki Gas
+const smokeGeometry = new THREE.BufferGeometry();
+const smokeCount = 200;
+const smokeArray = new Float32Array(smokeCount * 3);
+for(let i = 0; i < smokeCount * 3; i++) smokeArray[i] = (Math.random() - 0.5) * 2;
+smokeGeometry.setAttribute('position', new THREE.BufferAttribute(smokeArray, 3));
+const smokeMaterial = new THREE.PointsMaterial({
+    size: 0.05, color: 0x8A2BE2, transparent: true, opacity: 0, blending: THREE.AdditiveBlending
+});
+const hakiSmoke = new THREE.Points(smokeGeometry, smokeMaterial);
+scene.add(hakiSmoke);
+
+// Jagged Lightning Arcs
+const lightningMaterial = new THREE.LineBasicMaterial({ color: 0x9D00FF, transparent: true, opacity: 0 });
+const lightningLines = [];
+for (let i = 0; i < 3; i++) {
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(6 * 3); 
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const line = new THREE.Line(geo, lightningMaterial);
+    scene.add(line);
+    lightningLines.push(line);
+}
 
 // --- Load The Katana ---
 const loader = new GLTFLoader();
@@ -61,10 +85,13 @@ loader.load('models/katana.glb', (gltf) => {
 
 // --- Animation Loop ---
 let targetRotationY = 0; let targetRotationX = 0;
+const clock = new THREE.Clock();
 
 function animate() {
     requestAnimationFrame(animate);
+    const time = clock.getElapsedTime();
 
+    // Embers drift
     const voidPos = voidParticlesGeometry.attributes.position.array;
     for(let i = 1; i < voidParticlesCount * 3; i += 3) {
         voidPos[i] += 0.005; 
@@ -77,19 +104,60 @@ function animate() {
     if (katanaModel && isParallaxActive) {
         const normX = (mouseX / window.innerWidth) * 2 - 1;
         const normY = -(mouseY / window.innerHeight) * 2 + 1;
-        targetRotationY = normX * 0.5; 
-        targetRotationX = normY * 0.2; 
+        targetRotationY = normX * 0.5; targetRotationX = normY * 0.2; 
         
         katanaModel.rotation.y += (targetRotationY - katanaModel.rotation.y) * 0.05;
         katanaModel.rotation.x += (targetRotationX - katanaModel.rotation.x) * 0.05;
+        
+        // Pin VFX to sword
         hakiLight.position.copy(katanaModel.position);
+        hakiSmoke.position.copy(katanaModel.position);
+        lightningLines.forEach(line => line.position.copy(katanaModel.position));
 
+        // Random Haki Surge (Act 1)
         if (Math.random() > 0.98) {
             gsap.to(hakiLight, { intensity: 8, duration: 0.1, yoyo: true, repeat: 1 });
+            gsap.to(smokeMaterial, { opacity: 0.5, duration: 0.2, yoyo: true, repeat: 1 });
+            lightningLines.forEach(line => line.material.opacity = 1);
         } else {
             hakiLight.intensity = Math.max(0, hakiLight.intensity - 0.2);
+            smokeMaterial.opacity = Math.max(0, smokeMaterial.opacity - 0.02);
+            lightningLines.forEach(line => line.material.opacity = 0);
         }
     }
+
+    // Act 2 Constant VFX Animation (When activated)
+    if (!isParallaxActive && katanaModel) {
+        // Swirl the gas
+        if (smokeMaterial.opacity > 0) {
+            const smokePos = smokeGeometry.attributes.position.array;
+            for(let i = 0; i < smokeCount * 3; i += 3) {
+                smokePos[i + 1] += 0.02; 
+                smokePos[i] += Math.sin(time * 5 + i) * 0.02; 
+                if (smokePos[i + 1] > 2) {
+                    smokePos[i + 1] = -2;
+                    smokePos[i] = (Math.random() - 0.5) * 1.5; 
+                }
+            }
+            smokeGeometry.attributes.position.needsUpdate = true;
+        }
+
+        // Crackle the lightning
+        if (lightningLines[0].material.opacity > 0 && Math.floor(time * 30) % 2 === 0) {
+            lightningLines.forEach(line => {
+                const positions = line.geometry.attributes.position.array;
+                let currentY = -2;
+                for (let i = 0; i < 18; i += 3) {
+                    positions[i] = katanaModel.position.x + (Math.random() - 0.5) * 2; 
+                    positions[i + 1] = currentY; 
+                    positions[i + 2] = katanaModel.position.z + (Math.random() - 0.5) * 0.5; 
+                    currentY += 0.8;
+                }
+                line.geometry.attributes.position.needsUpdate = true;
+            });
+        }
+    }
+
     renderer.render(scene, camera);
 }
 animate();
@@ -107,7 +175,7 @@ const sliceFlash = document.getElementById('slice-flash');
 
 paperContainer.addEventListener('mousedown', (e) => {
     isDragging = true; startX = e.clientX; startY = e.clientY;
-    cursor.style.backgroundColor = "var(--aged-gold)"; // Cursor fills in when dragging
+    cursor.style.backgroundColor = "var(--aged-gold)"; 
 });
 
 paperContainer.addEventListener('mouseup', (e) => {
@@ -169,7 +237,7 @@ function triggerSlice(sx, sy, ex, ey) {
       .to("#void-content", { opacity: 1, duration: 1 }, "-=0.5");
 }
 
-// --- ACT 2: FIXED HORIZONTAL ROTATION & SCROLL ---
+// --- ACT 2: CONSTANT HAKI + CINEMATIC DEPTH SCROLL ---
 const continueBtn = document.getElementById('continue-text');
 
 continueBtn.addEventListener('click', () => {
@@ -179,27 +247,32 @@ continueBtn.addEventListener('click', () => {
     const tl = gsap.timeline();
     tl.to("#void-content", { opacity: 0, duration: 0.5 });
 
-    // FIX: Rotates Z axis to lay the sword horizontally. 
-    // Depending on your Blender export, Z rotates it left/right.
+    // 1. Move to Horizontal & IGNITE CONSTANT HAKI
     tl.to(katanaModel.position, { 
         x: 0, y: 0, z: 2.5, duration: 1.5, ease: "power3.inOut" 
     }, "-=0.2")
     .to(katanaModel.rotation, { 
-        x: 0, 
-        y: 0, 
-        z: -Math.PI / 2, // Rotates 90 degrees to lay perfectly flat
-        duration: 1.5, 
-        ease: "power3.inOut" 
-    }, "<"); 
+        x: 0, y: 0, z: -Math.PI / 2, duration: 1.5, ease: "power3.inOut" 
+    }, "<")
+    .call(() => {
+        // Force the VFX to stay on constantly, crackling furiously
+        gsap.to(hakiLight, { intensity: 10, duration: 0.5 });
+        gsap.to(smokeMaterial, { opacity: 0.8, duration: 0.5 });
+        lightningLines.forEach(line => line.material.opacity = 1);
+    }, null, "-=0.5");
 
+    // 2. Unlock scrolling and tie the Katana to a Z-axis dive
     tl.call(() => {
-        document.body.style.overflow = "auto"; 
+        document.body.style.overflowY = "auto"; 
         document.getElementById('scroll-track').style.display = "block"; 
 
-        // GSAP ScrollTrigger
+        // THE FIX: Instead of sliding left (X axis), the sword dives forward into the camera (Z axis).
+        // Since camera is at Z: 5, moving sword to Z: 6 pushes it *past* the lens.
         gsap.to(katanaModel.position, {
-            x: -8, // Slides to the left
-            ease: "none",
+            z: 6, // Plunges past the camera
+            y: -1, // Sinks slightly
+            x: -1, // Drifts slightly left
+            ease: "power2.in", // Starts slow, speeds up as it passes you
             scrollTrigger: {
                 trigger: "#scroll-track",
                 start: "top top",
@@ -211,7 +284,7 @@ continueBtn.addEventListener('click', () => {
         // Flash Impact at bottom
         ScrollTrigger.create({
             trigger: "#scroll-track",
-            start: "90% bottom",
+            start: "85% bottom",
             onEnter: () => gsap.to("#flash-bang", { opacity: 1, duration: 0.1 }),
             onLeaveBack: () => gsap.to("#flash-bang", { opacity: 0, duration: 0.1 })
         });
