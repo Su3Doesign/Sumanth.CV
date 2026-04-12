@@ -14,7 +14,7 @@
 }
 
 body {
-    background-color: var(--ocean-navy); 
+    background-color: #050505; 
     overflow: hidden; 
     font-family: 'Helvetica Neue', Arial, sans-serif;
 }
@@ -34,44 +34,29 @@ body {
 
 #canvas-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     z-index: 1; 
 }
 
 #paper-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     z-index: 10;
     pointer-events: auto; 
 }
 
+/* Identical Overlapping Halves */
 .paper-half {
     position: absolute;
-    width: 100%;
-    height: 50vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     background-color: var(--paper-color); 
     background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png');
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
-    transform-origin: center;
-}
-
-#paper-top {
-    top: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-#paper-bottom {
-    bottom: 0;
-    border-top: 1px solid rgba(0,0,0,0.1);
 }
 
 .japanese-text {
@@ -97,36 +82,31 @@ body {
     opacity: 0.6;
 }
 
-/* Dynamic Diagonal Slice Line */
+/* Dynamic Plasma Slice */
 #slice-flash {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
-    height: 4px;
-    background-color: #fff;
-    box-shadow: 0 0 20px 5px var(--ember-red), 0 0 40px 10px var(--aged-gold); 
-    transform-origin: center;
+    height: 40px;
+    background: linear-gradient(90deg, transparent 0%, var(--ember-red) 20%, var(--aged-gold) 40%, #ffffff 50%, var(--aged-gold) 60%, var(--ember-red) 80%, transparent 100%);
+    filter: url(#fire-distortion) drop-shadow(0 0 15px var(--ember-red));
+    transform-origin: center left;
     opacity: 0;
     z-index: 15;
     pointer-events: none;
 }
 
-/* Ember Particles */
 #embers-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
     z-index: 16;
 }
 
 .ember {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 4px; height: 4px;
     background-color: var(--ember-red);
     box-shadow: 0 0 10px 2px var(--aged-gold);
     border-radius: 50%;
@@ -142,10 +122,27 @@ body {
     opacity: 0;
 }
 
-#continue-text {
+.clickable {
     color: var(--aged-gold);
     letter-spacing: 8px;
     font-weight: 300;
     font-size: 1.2rem;
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    pointer-events: auto;
+    transition: text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.clickable:hover {
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+    transform: scale(1.05);
+}
+
+#flash-bang {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: #ffffff; 
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
 }
