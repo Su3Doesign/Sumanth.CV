@@ -1,3 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumanth | 3D Architect</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
 <body>
     <svg style="display: none;">
         <filter id="fire-distortion">
@@ -34,51 +51,12 @@
         <div id="embers-container"></div>
     </div>
 
-    ```
+    <div id="void-content">
+        <h2 id="continue-text" class="clickable">続く / CONTINUE</h2>
+    </div>
 
-### 2. Update `style.css` (The Plasma Look)
-Replace your current `.paper-half` and `#slice-flash` CSS rules with these. We are making the paper absolute full-screen and applying the SVG fire filter to the slash.
+    <div id="flash-bang"></div>
 
-```css
-/* Update Paper Halves */
-.paper-half {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--paper-color); 
-    background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png');
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* We remove overflow: hidden so the clip-path can do the work */
-}
-
-/* Remove the old borders */
-#paper-top, #paper-bottom { border: none; }
-
-/* The NEW Real Fire Slice */
-#slice-flash {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 30px; /* Thicker to allow the fire to warp */
-    /* Core plasma gradient */
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        var(--ember-red) 20%, 
-        var(--aged-gold) 40%, 
-        #ffffff 50%, 
-        var(--aged-gold) 60%, 
-        var(--ember-red) 80%, 
-        transparent 100%
-    );
-    /* Applies the chaotic noise from the HTML SVG */
-    filter: url(#fire-distortion) drop-shadow(0 0 15px var(--ember-red));
-    transform-origin: center left;
-    opacity: 0;
-    z-index: 15;
-    pointer-events: none;
-}
+    <script type="module" src="script.js"></script>
+</body>
+</html>
