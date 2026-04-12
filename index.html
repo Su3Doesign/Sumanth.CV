@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sumanth | 3D Architect</title>
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <script type="importmap">
         {
             "imports": {
@@ -24,11 +27,9 @@
     </svg>
 
     <div id="custom-cursor"></div>
-
     <div id="canvas-container"></div>
 
     <div id="paper-container">
-        
         <div class="paper-half" id="paper-top">
             <div class="japanese-text">
                 <h1>世界を創る者</h1>
@@ -56,6 +57,8 @@
     </div>
 
     <div id="flash-bang"></div>
+
+    <div id="scroll-track" style="height: 300vh; display: none;"></div>
 
     <script type="module" src="script.js"></script>
 </body>
