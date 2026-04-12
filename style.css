@@ -1,0 +1,151 @@
+:root {
+    --ocean-navy: #0A1128;
+    --aged-gold: #D4AF37;
+    --maritime-teal: #1282A2;
+    --ember-red: #FF4500;
+    --paper-color: #eaddcf;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none; 
+}
+
+body {
+    background-color: var(--ocean-navy); 
+    overflow: hidden; 
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+#custom-cursor {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    background-color: var(--aged-gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    transition: transform 0.1s ease-out;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; 
+}
+
+#paper-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: auto; 
+}
+
+.paper-half {
+    position: absolute;
+    width: 100%;
+    height: 50vh;
+    background-color: var(--paper-color); 
+    background-image: url('https://www.transparenttextures.com/patterns/rice-paper-2.png');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transform-origin: center;
+}
+
+#paper-top {
+    top: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+#paper-bottom {
+    bottom: 0;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.japanese-text {
+    position: absolute;
+    top: 50px;
+    writing-mode: vertical-rl; 
+    text-orientation: upright;
+    color: #1a1a1a;
+    letter-spacing: 10px;
+    opacity: 0.8;
+}
+
+.japanese-text h1 { font-size: 3rem; font-weight: 300; }
+.japanese-text h2 { font-size: 1.5rem; margin-right: 20px; font-weight: 400; }
+.japanese-text h3 { font-size: 1rem; margin-right: 40px; color: var(--ember-red); }
+
+.instructions {
+    position: absolute;
+    bottom: 50px;
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    opacity: 0.6;
+}
+
+/* Dynamic Diagonal Slice Line */
+#slice-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #fff;
+    box-shadow: 0 0 20px 5px var(--ember-red), 0 0 40px 10px var(--aged-gold); 
+    transform-origin: center;
+    opacity: 0;
+    z-index: 15;
+    pointer-events: none;
+}
+
+/* Ember Particles */
+#embers-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 16;
+}
+
+.ember {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: var(--ember-red);
+    box-shadow: 0 0 10px 2px var(--aged-gold);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+#void-content {
+    position: fixed;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+    opacity: 0;
+}
+
+#continue-text {
+    color: var(--aged-gold);
+    letter-spacing: 8px;
+    font-weight: 300;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
