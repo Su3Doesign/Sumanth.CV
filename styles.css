@@ -1,3 +1,33 @@
+/* ═══════════ LOCAL FONTS ═══════════ */
+
+@font-face {
+  font-family: 'Inter Tight';
+  src: url('fonts/InterTight-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('fonts/CormorantGaramond-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Serif JP';
+  src: url('fonts/NotoSerifJP-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    SUMOFDANTH — STYLES
    8-beat scroll hero. StringTune chrome + Cappen editorial + hilltop dawn.
