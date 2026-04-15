@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>sumofDanth · 世界を創る者</title>
-
+<title>sumanth.D© — 世界を創る者</title>
 <meta name="description" content="Sumanth Amidyala — 3D environment designer, hard-surface modeller, builder of worlds.">
+
+<link rel="preload" as="image" href="assets/bg-hero.png">
+<link rel="preload" as="image" href="assets/bg-clouds.png">
+<link rel="preload" as="image" href="assets/bg-hilltop.png">
+<link rel="preload" as="image" href="assets/bg-dawn.png">
+<link rel="preload" as="image" href="assets/sensei-mugen.png">
+<link rel="preload" as="image" href="assets/jumper-silhouette.png">
+<link rel="preload" as="image" href="assets/texture-paper.jpg">
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -13,150 +20,154 @@
 
 <div class="loader" id="loader">
   <div class="loader-inner">
-    <div class="loader-mark" id="loader-mark">
-      <span class="m-glyph" id="ld-m">m</span>
-      <span class="d-glyph" id="ld-d">.D</span>
+    <div class="loader-mark">
+      <span>su</span>
+      <span class="m-glyph" id="load-m">m</span>
+      <span class="d-glyph">.D</span>
+      <span class="c-mark">©</span>
     </div>
     <div class="loader-bar"><i id="loader-bar"></i></div>
-    <div class="loader-text" id="loader-text">Forging &middot; &#37428;&#36896;</div>
-    <div class="loader-meta">&infin; ALL BLUE / TRANSMISSION : 01</div>
+    <div class="loader-text" id="loader-text">Forging · 鍛造</div>
+    <div class="loader-meta-l">∞ ALL BLUE / TRANSMISSION : 01</div>
     <div class="loader-meta-r" id="loader-pct">000 %</div>
   </div>
 </div>
 
 <div class="stage" id="stage">
 
-  <canvas class="layer" id="bg"></canvas>
-<canvas class="layer" id="land"></canvas>
-<canvas class="layer" id="three"></canvas>
-<canvas class="layer" id="fx"></canvas>
-<canvas class="layer" id="fg"></canvas>
-
-  <div class="fg-type" id="fg-type">
-    <span class="word" id="fg-word">sumofDanth</span>
+  <div class="bg-scene" id="bg-scene">
+    <img class="bg-img bg-1" id="bg-hero"    src="assets/bg-hero.png"    alt="" decoding="async">
+    <img class="bg-img bg-2" id="bg-clouds"  src="assets/bg-clouds.png"  alt="" decoding="async">
+    <img class="bg-img bg-3" id="bg-impact"  alt="" aria-hidden="true">
+    <img class="bg-img bg-4" id="bg-paper"   src="assets/texture-paper.jpg" alt="" decoding="async">
+    <img class="bg-img bg-5" id="bg-hilltop" src="assets/bg-hilltop.png" alt="" decoding="async">
+    <img class="bg-img bg-6" id="bg-dawn"    src="assets/bg-dawn.png"    alt="" decoding="async">
   </div>
 
-  <div class="shatter-layer" id="shatter"></div>
+  <canvas class="layer layer-three" id="three"></canvas>
+  <canvas class="layer layer-atmos" id="atmos"></canvas>
 
-  <div class="progress-line" id="progress"></div>
+  <div class="shatter-layer" id="shatter" aria-hidden="true"></div>
+  <div class="progress-line" id="progress" aria-hidden="true"></div>
 
-  <div class="chromatic" id="chromatic"></div>
-
-  <div class="grain"></div>
-
-  <div class="scanlines" id="scanlines"></div>
+  <div class="overlay-chromatic" aria-hidden="true"></div>
+  <div class="overlay-grain" aria-hidden="true"></div>
+  <div class="overlay-scanlines" aria-hidden="true"></div>
+  <div class="overlay-vignette" aria-hidden="true"></div>
 
   <header class="chrome">
-    <div class="brand">
+    <div class="brand" data-cursor="hover">
       <div class="brand-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 21l6-6"/>
-          <path d="M9 15l9-9 3 3-9 9-3-3z"/>
-          <path d="M14 7l3 3"/>
+          <path d="M3 21l6-6"/><path d="M9 15l9-9 3 3-9 9-3-3z"/><path d="M14 7l3 3"/>
         </svg>
       </div>
       <div class="brand-mark">
-        <span class="brand-su">su</span><span class="brand-m" id="brand-m">m</span><span class="brand-d">.D</span><sup>&copy;</sup>
+        <span>su</span><span class="brand-m" id="brand-m">m</span><span class="brand-d">.D</span><sup>©</sup>
       </div>
     </div>
 
-    <nav class="nav">
-      <span class="pill -num" id="pill-num">1</span>
-      <span class="pill -active" id="pill-section">Codex</span>
+    <nav class="chapters" id="chapters" data-cursor="hover">
+      <div class="chapter-pill -num" id="ch-num">1</div>
+      <div class="chapter-pill -active" id="ch-main">
+        <span class="ch-label" id="ch-label">Codex</span>
+        <div class="ch-expand" id="ch-expand">
+          <div class="ch-item" data-jump="0.08">II · Sacred Tree</div>
+          <div class="ch-item" data-jump="0.38">III · Ascent</div>
+          <div class="ch-item" data-jump="0.72">IV · Skill Hub</div>
+          <div class="ch-item" data-jump="0.85">V · Moonlit Hill</div>
+          <div class="ch-item" data-jump="0.96">VI · Dawn</div>
+        </div>
+      </div>
     </nav>
 
     <div class="scroll-pct" id="scroll-pct">0%</div>
-
   </header>
 
   <div class="stats">
-    <span>&larr; FPS : <span id="stat-fps">60</span></span>
+    <span>← FPS : <span id="stat-fps">60</span></span>
     <span>TOP : <span id="stat-top">0</span> PX</span>
     <span>RUNWAY : <span id="stat-run">0</span> %</span>
   </div>
 
-  <div class="kanji-mark" id="kanji-1"><span>&#21109;</span></div>
-
-  <div class="caption cap-1" id="cap-1">CHAPTER &#19968; &middot; INHERITANCE</div>
-  <div class="caption cap-2" id="cap-2">&mdash; FROM HYDERABAD, A CRAFTSMAN &mdash;</div>
-  <div class="caption cap-3" id="cap-3">VOL. 4.6 / FOLIO 001</div>
-  <div class="caption cap-4" id="cap-4">&mdash; OF CLOUDS AND STEEL &mdash;</div>
-  <div class="caption cap-5" id="cap-5">&mdash; THE IMPACT &mdash;</div>
-  <div class="caption cap-6" id="cap-6">&mdash; AND SO &mdash;</div>
-  <div class="caption cap-7" id="cap-7">CHAPTER &#20108; &middot; PROOF OF WILL</div>
-  <div class="caption cap-8" id="cap-8">&mdash; THE DAWN &mdash;</div>
-
-  <div class="beat-title bt-2" id="bt-2" data-target="A blade is just steel, | until &lt;em&gt;someone&lt;/em&gt; chooses to lift it."></div>
-
-  <div class="beat-title bt-3" id="bt-3" data-target="&lt;span class='quiet'&gt;&#8220;And so &mdash;&#8221;&lt;/span&gt;|&lt;span class='accent'&gt;the world I wanted&lt;/span&gt;|&lt;span class='quiet'&gt;was the one I had to build.&#8221;&lt;/span&gt;"></div>
-
-  <div class="beat-title bt-4" id="bt-4" data-target="Between &lt;em&gt;clouds&lt;/em&gt; and &lt;em&gt;thunder&lt;/em&gt;, | a blade remembers its weight."></div>
-
-  <div class="beat-title bt-6" id="bt-6" data-target="&lt;span class='serif'&gt;&#8220;To master the craft is to master &lt;em&gt;the self&lt;/em&gt;.&#8221;&lt;/span&gt;"></div>
-
-  <div class="works-intro" id="works-intro">
-    <div class="works-kicker">WORKS &middot; 作品</div>
-    <h2 class="works-h">The worlds I have begun to build.</h2>
-    <p class="works-sub">Environment design, hard-surface modelling, and the objects that inhabit imagined spaces. Selected pieces, 2022&ndash;2025.</p>
+  <div class="hero-monogram" id="hero-monogram">
+    <span>su</span><span class="hm-m" id="hm-m">m</span><span class="hm-d">.D</span>
+    <span class="hm-copy">©</span>
   </div>
 
-  <div class="works-grid" id="works-grid">
+  <div class="caption cap-chapter" id="cap-chapter">CHAPTER 一 · INHERITANCE</div>
+  <div class="caption cap-bottom"  id="cap-bottom">— FROM HYDERABAD, A CRAFTSMAN —</div>
+  <div class="caption cap-folio"   id="cap-folio">VOL. 4.6 / FOLIO 001</div>
+
+  <div class="beat-title bt-sacred liquid-glass-text" id="bt-sacred"
+       data-target="A blade is just steel,|until &lt;em&gt;someone&lt;/em&gt; chooses to lift it."></div>
+
+  <div class="beat-title bt-dialogue" id="bt-dialogue"
+       data-target="&lt;span class='quiet'&gt;&#8220;And so —&#8221;&lt;/span&gt;|&lt;span class='accent'&gt;the world I wanted&lt;/span&gt;|&lt;span class='quiet'&gt;was the one I had to build.&#8221;&lt;/span&gt;"></div>
+
+  <div class="beat-title bt-ascent"  id="bt-ascent"
+       data-target="Between &lt;em&gt;clouds&lt;/em&gt; and &lt;em&gt;thunder&lt;/em&gt;,|a blade remembers its weight."></div>
+
+  <div class="beat-title bt-self"    id="bt-self"
+       data-target="&#8220;To master the craft is to master &lt;em&gt;the self&lt;/em&gt;.&#8221;"></div>
+
+  <section class="skillhub" id="skillhub" aria-hidden="true">
+    <div class="skillhub-left">
+      <div class="sh-kicker">WORKS &middot; 作品</div>
+      <h2 class="sh-title">The worlds<br>I have begun<br><em>to build.</em></h2>
+      <p class="sh-sub">Environment design, hard-surface modelling, and the objects that inhabit imagined spaces. Seven pieces across three continents — 2023 to the present.</p>
+      <div class="sh-footnote">Scroll to traverse · 続く</div>
     </div>
+    <div class="skillhub-right" id="skillhub-right"></div>
+  </section>
 
   <div class="dawn-title" id="dawn-title">
-    <span class="dawn-line-1">&#22577;&#12356; &middot; The Dawn</span>
-    <span class="dawn-line-2">is a <em>question</em>.</span>
-    <span class="dawn-line-3">The sword is the <span class="red">answer</span>.</span>
+    <div class="dt-kicker">報い · The Dawn</div>
+    <div class="dt-main">is a <em>question</em>.</div>
+    <div class="dt-main">The sword is the <span class="red">answer</span>.</div>
   </div>
 
-  <div class="jumper" id="jumper">
-    <svg viewBox="0 0 120 140" preserveAspectRatio="xMidYMid meet">
-      <g class="jumper-body">
-        <circle cx="60" cy="20" r="12" fill="#000"/>
-        <path d="M40 14 Q60 4 80 14 Q80 20 60 20 Q40 20 40 14 Z" fill="#000"/>
-        <rect x="42" y="12" width="36" height="3" fill="#c62828"/>
-        <path d="M52 30 Q60 34 68 30 L72 62 Q60 66 48 62 Z" fill="#000"/>
-        <path d="M52 34 Q34 30 22 54 Q18 70 28 80 Q38 70 44 52 Q50 40 52 34 Z" fill="#000"/>
-        <path d="M68 32 Q84 20 96 12 Q102 8 100 16 Q92 28 78 42 Q72 40 68 32 Z" fill="#000"/>
-        <path d="M52 62 Q46 76 42 94 Q48 100 56 96 L60 74 Z" fill="#000"/>
-        <path d="M60 62 Q66 78 74 92 Q80 96 74 102 L64 76 Z" fill="#000"/>
-      </g>
-    </svg>
-  </div>
+  <button class="jumper" id="jumper" aria-label="Awaken">
+    <img src="assets/jumper-silhouette.png" alt="" decoding="async">
+    <span class="jumper-hint">Click to awaken · 覚醒</span>
+  </button>
 
-  <div class="scroll-hint" id="scroll-hint">Scroll &middot; &#32154;&#12367;</div>
+  <div class="scroll-hint" id="scroll-hint">Scroll · 続く</div>
 
-  <div class="narrator" id="narrator">
-    <div class="bubble" id="bubble">
-      <div class="who" id="who">SENSEI MUGEN</div>
-      <div class="text" id="text">&hellip;</div>
+  <div class="mugen" id="mugen">
+    <div class="mugen-bubble" id="mugen-bubble">
+      <div class="mb-who" id="mb-who">SENSEI MUGEN</div>
+      <div class="mb-text" id="mb-text">…</div>
     </div>
-    <div class="character">
-      <canvas id="sprite" width="32" height="40"></canvas>
-      <div class="name" id="char-name">MUGEN</div>
+    <div class="mugen-portrait">
+      <img src="assets/sensei-mugen.png" alt="Sensei Mugen" decoding="async">
+      <span class="mp-name">MUGEN · 夢幻</span>
     </div>
   </div>
 
-  <div class="meta-widget" id="meta-widget">
-    <div class="mw-label">CURRENT</div>
-    <div class="mw-value" id="mw-section">Void</div>
-    <div class="mw-sep"></div>
-    <div class="mw-label">COORD</div>
-    <div class="mw-value" id="mw-coord">17&deg;N &middot; 78&deg;E</div>
-    <div class="mw-sep"></div>
-    <div class="mw-label">HOUR</div>
-    <div class="mw-value" id="mw-hour">&mdash;</div>
+  <aside class="meta-widget" id="meta-widget">
+    <div class="mw-row"><span class="mw-k">HOUR</span><span class="mw-v" id="mw-hour">Nightfall</span></div>
+    <div class="mw-row"><span class="mw-k">COORD</span><span class="mw-v">17°N · 78°E</span></div>
+    <div class="mw-row"><span class="mw-k">WIND</span><span class="mw-v" id="mw-wind">NE · LOW</span></div>
+  </aside>
+
+  <canvas class="ink-layer" id="ink-layer" aria-hidden="true"></canvas>
+
+  <div class="ink-title" id="ink-title">
+    <div class="it-kanji">覚醒</div>
+    <div class="it-en">AWAKENING</div>
+    <div class="it-sub">Every ocean has a shore.<br>Every shore has a sky.<br><em>Keep going.</em></div>
   </div>
 
 </div>
 
 <div class="scroll-spacer"></div>
-
-<div class="cursor" id="cursor"></div>
+<div class="cursor" id="cursor"><div class="cursor-dot"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
 
 <script src="scene.js"></script>
 
