@@ -2,174 +2,221 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>sumanth.D© — 世界を創る者</title>
-<meta name="description" content="Sumanth Amidyala — 3D environment designer, hard-surface modeller, builder of worlds.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sumanth.D</title>
 
-<link rel="preload" as="image" href="assets/bg-hero.png">
-<link rel="preload" as="image" href="assets/bg-clouds.png">
-<link rel="preload" as="image" href="assets/bg-hilltop.png">
-<link rel="preload" as="image" href="assets/bg-dawn.png">
-<link rel="preload" as="image" href="assets/sensei-mugen.png">
-<link rel="preload" as="image" href="assets/jumper-silhouette.png">
-<link rel="preload" as="image" href="assets/texture-paper.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,400;1,500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="styles.css">
+<style>
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:#0a0906;
+  color:#eee;
+  overflow-x:hidden;
+}
+
+/* HERO */
+.hero{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(60px,10vw,140px);
+  font-style:italic;
+}
+
+/* SCROLL SECTION */
+.section{
+  height:200vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* BUTTON */
+.enter-btn{
+  padding:14px 28px;
+  border:1px solid rgba(255,255,255,.2);
+  cursor:pointer;
+  letter-spacing:.2em;
+}
+
+/* INK MODE */
+.ink-system{
+  position:fixed;
+  inset:0;
+  background:#f3ead7;
+  display:none;
+  overflow-y:auto;
+}
+
+.ink-system.active{
+  display:block;
+}
+
+/* HEADER */
+.ink-header{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.ink-title{
+  font-size:clamp(40px,6vw,100px);
+  font-family:'Cormorant Garamond',serif;
+}
+
+/* VAULT */
+.ink-vault{
+  max-width:900px;
+  margin:auto;
+  padding:40px 20px;
+}
+
+/* CARD */
+.ink-card{
+  background:rgba(0,0,0,.05);
+  padding:40px;
+  margin-bottom:40px;
+  border:1px solid rgba(0,0,0,.2);
+  opacity:0;
+  transform:translateY(80px);
+  transition:all 1s ease;
+  cursor:pointer;
+}
+
+.ink-card.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.ink-card:hover{
+  transform:translateY(-5px);
+}
+
+/* EXPANDED */
+.ink-card.expanded{
+  background:#fff;
+  transform:scale(1.02);
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-content{
+  background:#fff;
+  padding:40px;
+  max-width:600px;
+  color:#000;
+}
+
+.close{
+  margin-top:20px;
+  cursor:pointer;
+  color:red;
+}
+</style>
 </head>
+
 <body>
 
-<div class="loader" id="loader">
-  <div class="loader-inner">
-    <div class="loader-mark">
-      <span>su</span>
-      <span class="m-glyph" id="load-m">m</span>
-      <span class="d-glyph">.D</span>
-      <span class="c-mark">©</span>
-    </div>
-    <div class="loader-bar"><i id="loader-bar"></i></div>
-    <div class="loader-text" id="loader-text">Forging · 鍛造</div>
-    <div class="loader-meta-l">∞ ALL BLUE / TRANSMISSION : 01</div>
-    <div class="loader-meta-r" id="loader-pct">000 %</div>
-  </div>
+<div class="hero">su m .D©</div>
+
+<div class="section">
+  <div class="enter-btn" onclick="enterInk()">ENTER</div>
 </div>
 
-<div class="stage" id="stage">
+<!-- INK MODE -->
+<div class="ink-system" id="ink">
 
-  <div class="bg-scene" id="bg-scene">
-    <img class="bg-img bg-1" id="bg-hero"    src="assets/bg-hero.png"    alt="" decoding="async">
-    <img class="bg-img bg-2" id="bg-clouds"  src="assets/bg-clouds.png"  alt="" decoding="async">
-    <img class="bg-img bg-3" id="bg-impact"  alt="" aria-hidden="true">
-    <img class="bg-img bg-4" id="bg-paper"   src="assets/texture-paper.jpg" alt="" decoding="async">
-    <img class="bg-img bg-5" id="bg-hilltop" src="assets/bg-hilltop.png" alt="" decoding="async">
-    <img class="bg-img bg-6" id="bg-dawn"    src="assets/bg-dawn.png"    alt="" decoding="async">
+  <div class="ink-header">
+    <div class="ink-title">KAKUSEI</div>
+    <p>scroll to explore</p>
   </div>
 
-  <canvas class="layer layer-three" id="three"></canvas>
-  <canvas class="layer layer-atmos" id="atmos"></canvas>
-
-  <div class="shatter-layer" id="shatter" aria-hidden="true"></div>
-  <div class="progress-line" id="progress" aria-hidden="true"></div>
-
-  <div class="overlay-chromatic" aria-hidden="true"></div>
-  <div class="overlay-grain" aria-hidden="true"></div>
-  <div class="overlay-scanlines" aria-hidden="true"></div>
-  <div class="overlay-vignette" aria-hidden="true"></div>
-
-  <header class="chrome">
-    <div class="brand" data-cursor="hover">
-      <div class="brand-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 21l6-6"/><path d="M9 15l9-9 3 3-9 9-3-3z"/><path d="M14 7l3 3"/>
-        </svg>
-      </div>
-      <div class="brand-mark">
-        <span>su</span><span class="brand-m" id="brand-m">m</span><span class="brand-d">.D</span><sup>©</sup>
-      </div>
-    </div>
-
-    <nav class="chapters" id="chapters" data-cursor="hover">
-      <div class="chapter-pill -num" id="ch-num">1</div>
-      <div class="chapter-pill -active" id="ch-main">
-        <span class="ch-label" id="ch-label">Codex</span>
-        <div class="ch-expand" id="ch-expand">
-          <div class="ch-item" data-jump="0.08">II · Sacred Tree</div>
-          <div class="ch-item" data-jump="0.38">III · Ascent</div>
-          <div class="ch-item" data-jump="0.72">IV · Skill Hub</div>
-          <div class="ch-item" data-jump="0.85">V · Moonlit Hill</div>
-          <div class="ch-item" data-jump="0.96">VI · Dawn</div>
-        </div>
-      </div>
-    </nav>
-
-    <div class="scroll-pct" id="scroll-pct">0%</div>
-  </header>
-
-  <div class="stats">
-    <span>← FPS : <span id="stat-fps">60</span></span>
-    <span>TOP : <span id="stat-top">0</span> PX</span>
-    <span>RUNWAY : <span id="stat-run">0</span> %</span>
-  </div>
-
-  <div class="hero-monogram" id="hero-monogram">
-    <span>su</span><span class="hm-m" id="hm-m">m</span><span class="hm-d">.D</span>
-    <span class="hm-copy">©</span>
-  </div>
-
-  <div class="caption cap-chapter" id="cap-chapter">CHAPTER 一 · INHERITANCE</div>
-  <div class="caption cap-bottom"  id="cap-bottom">— FROM HYDERABAD, A CRAFTSMAN —</div>
-  <div class="caption cap-folio"   id="cap-folio">VOL. 4.6 / FOLIO 001</div>
-
-  <div class="beat-title bt-sacred liquid-glass-text" id="bt-sacred"
-       data-target="A blade is just steel,|until &lt;em&gt;someone&lt;/em&gt; chooses to lift it."></div>
-
-  <div class="beat-title bt-dialogue" id="bt-dialogue"
-       data-target="&lt;span class='quiet'&gt;&#8220;And so —&#8221;&lt;/span&gt;|&lt;span class='accent'&gt;the world I wanted&lt;/span&gt;|&lt;span class='quiet'&gt;was the one I had to build.&#8221;&lt;/span&gt;"></div>
-
-  <div class="beat-title bt-ascent"  id="bt-ascent"
-       data-target="Between &lt;em&gt;clouds&lt;/em&gt; and &lt;em&gt;thunder&lt;/em&gt;,|a blade remembers its weight."></div>
-
-  <div class="beat-title bt-self"    id="bt-self"
-       data-target="&#8220;To master the craft is to master &lt;em&gt;the self&lt;/em&gt;.&#8221;"></div>
-
-  <section class="skillhub" id="skillhub" aria-hidden="true">
-    <div class="skillhub-left">
-      <div class="sh-kicker">WORKS &middot; 作品</div>
-      <h2 class="sh-title">The worlds<br>I have begun<br><em>to build.</em></h2>
-      <p class="sh-sub">Environment design, hard-surface modelling, and the objects that inhabit imagined spaces. Seven pieces across three continents — 2023 to the present.</p>
-      <div class="sh-footnote">Scroll to traverse · 続く</div>
-    </div>
-    <div class="skillhub-right" id="skillhub-right"></div>
-  </section>
-
-  <div class="dawn-title" id="dawn-title">
-    <div class="dt-kicker">報い · The Dawn</div>
-    <div class="dt-main">is a <em>question</em>.</div>
-    <div class="dt-main">The sword is the <span class="red">answer</span>.</div>
-  </div>
-
-  <button class="jumper" id="jumper" aria-label="Awaken">
-    <img src="assets/jumper-silhouette.png" alt="" decoding="async">
-    <span class="jumper-hint">Click to awaken · 覚醒</span>
-  </button>
-
-  <div class="scroll-hint" id="scroll-hint">Scroll · 続く</div>
-
-  <div class="mugen" id="mugen">
-    <div class="mugen-bubble" id="mugen-bubble">
-      <div class="mb-who" id="mb-who">SENSEI MUGEN</div>
-      <div class="mb-text" id="mb-text">…</div>
-    </div>
-    <div class="mugen-portrait">
-      <img src="assets/sensei-mugen.png" alt="Sensei Mugen" decoding="async">
-      <span class="mp-name">MUGEN · 夢幻</span>
-    </div>
-  </div>
-
-  <aside class="meta-widget" id="meta-widget">
-    <div class="mw-row"><span class="mw-k">HOUR</span><span class="mw-v" id="mw-hour">Nightfall</span></div>
-    <div class="mw-row"><span class="mw-k">COORD</span><span class="mw-v">17°N · 78°E</span></div>
-    <div class="mw-row"><span class="mw-k">WIND</span><span class="mw-v" id="mw-wind">NE · LOW</span></div>
-  </aside>
-
-  <canvas class="ink-layer" id="ink-layer" aria-hidden="true"></canvas>
-
-  <div class="ink-title" id="ink-title">
-    <div class="it-kanji">覚醒</div>
-    <div class="it-en">AWAKENING</div>
-    <div class="it-sub">Every ocean has a shore.<br>Every shore has a sky.<br><em>Keep going.</em></div>
-  </div>
+  <div class="ink-vault" id="vault"></div>
 
 </div>
 
-<div class="scroll-spacer"></div>
-<div class="cursor" id="cursor"><div class="cursor-dot"></div></div>
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
 
-<script src="scene.js"></script>
+/* DATA */
+const works = [
+  {title:"Fudo Myoo",desc:"Sanctum of fire."},
+  {title:"Midea Canada",desc:"Industry work."},
+  {title:"Kohaku",desc:"Koi study."},
+  {title:"KD Displays",desc:"Retail design."},
+  {title:"Onibi",desc:"Lantern study."},
+  {title:"Investohome",desc:"Brand identity."},
+  {title:"Iron Garden",desc:"Environment study."}
+];
+
+/* BUILD */
+const vault = document.getElementById('vault');
+
+works.forEach((w,i)=>{
+  const card = document.createElement('div');
+  card.className='ink-card';
+  card.innerHTML=`
+    <h2>${w.title}</h2>
+    <p>${w.desc}</p>
+  `;
+  card.onclick=()=>openModal(w);
+  vault.appendChild(card);
+});
+
+/* SCROLL REVEAL */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('show');
+    }
+  });
+});
+
+document.querySelectorAll('.ink-card').forEach(c=>observer.observe(c));
+
+/* ENTER */
+function enterInk(){
+  document.getElementById('ink').classList.add('active');
+}
+
+/* MODAL */
+function openModal(work){
+  const modal = document.getElementById('modal');
+  const content = document.getElementById('modalContent');
+
+  content.innerHTML=`
+    <h2>${work.title}</h2>
+    <p>${work.desc}</p>
+    <div class="close" onclick="closeModal()">close</div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('active');
+}
+
+</script>
 
 </body>
 </html>
